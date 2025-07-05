@@ -25,7 +25,7 @@ public class AiSurveyGenerator {
             data = data.substring(7,data.length() - 3);
         }
 
-        System.out.println("\ndata: \n" + data);
+//        System.out.println("\ndata: \n" + data);
         JSONObject obj = new JSONObject(data);
         JSONObject surveyObj = obj.getJSONObject("survey");
 
