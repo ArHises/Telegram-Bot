@@ -1,5 +1,5 @@
 package util;
 
 public class MyKeys {
-    public static final String MY_ID = "211816194";
+    public static final String MY_ID = "";
 }
