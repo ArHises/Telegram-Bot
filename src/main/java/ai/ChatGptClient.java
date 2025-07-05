@@ -54,17 +54,19 @@ public class ChatGptClient {
 
             Response response = client.newCall(request).execute();
 
-
             if (response.body() == null) throw new RuntimeException("No response :(");
             String responseBody = response.body().string();
 
-//            System.out.println("response Body: " + responseBody);
 
             JSONObject obj = new JSONObject(responseBody);
+            if (task.equals("clear-history")){
+                return obj.getBoolean("success")? "Fetched successfully" : "ERROR fetching";
+            }
+            System.out.println(obj.getBoolean("success")? "Fetched successfully" : "ERROR fetching");
+
             if (!obj.has("extra") || obj.isNull("extra")) {
                 throw new RuntimeException("Missing or null 'extra' field");
             }
-            System.out.println(obj);
 
             response.close();
             return obj.getString("extra");
