@@ -57,7 +57,6 @@ public class ChatGptClient {
             if (response.body() == null) throw new RuntimeException("No response :(");
             String responseBody = response.body().string();
 
-
             JSONObject obj = new JSONObject(responseBody);
             if (task.equals("clear-history")){
                 return obj.getBoolean("success")? "Fetched successfully" : "ERROR fetching";
