@@ -1,10 +1,15 @@
 package view;
 
+import ai.AiSurveyGenerator;
 import analysis.AnalysisService;
 import analysis.ChartPanel;
+import model.Survey;
+import model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
+import java.util.Set;
 
 public class SurveyFrame extends JFrame {
 //    TODO: Responsibilities:
@@ -25,10 +30,10 @@ public class SurveyFrame extends JFrame {
         analysisService = new AnalysisService();
         chartPanel = analysisService.getChartPanel();
 
-        cardPanel.add(chartPanel, "charts");
+        cardPanel.add(chartPanel, "Charts");
 
         add(cardPanel);
-        cardLayout.show(cardPanel, "Main Menu");
+        cardLayout.show(cardPanel, "Charts");
     }
 
     public void switchToCharts() {
