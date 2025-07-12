@@ -18,27 +18,16 @@ public class ChartPanel extends JPanel {
 
     private Survey survey;
     private ChartRenderer chartRenderer;
-    private JFreeChart pieChart;
 
-    private int startX;
-    private int startY;
+    private final int startX = 50;
+    private final int startY = 50;
 
     public ChartPanel(Survey survey) {
         this.survey = survey;
         this.chartRenderer = new ChartRenderer(this);
-        this.startX = 50;
-        this.startY = 50;
-
-//        DefaultPieDataset dataset = new DefaultPieDataset();
-//        dataset.setValue("A", 40);
-//        dataset.setValue("B", 30);
-//        dataset.setValue("C", 30);
-//        pieChart = ChartFactory.createPieChart("Pie Chart", dataset, true, true, false);
-
-//        setPaused(false);
-//        chartRenderer.run();
     }
 
+    @Deprecated
     public void drawColumns(Graphics g, int x, int y){
         int gap = 0;
         Random rand = new Random();
@@ -57,7 +46,7 @@ public class ChartPanel extends JPanel {
         }
     }
 
-    public void drawPie(Graphics g){
+    public void drawPies(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
 
         List<JFreeChart> pies = new ArrayList<>();
@@ -85,9 +74,7 @@ public class ChartPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 //        drawColumns(g,this.startX,this.startY);
-        drawPie(g);
-
-
+        drawPies(g);
     }
 
     public void setPaused(boolean paused) {
