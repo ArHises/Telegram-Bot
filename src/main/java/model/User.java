@@ -1,51 +1,40 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class User {
     private int id;
+    private long chatId;
     private String username;
-    private static final Map<Integer,User> users = new HashMap<>();
 
-    public User(int id, String username) {
+    public User(int id, long chatId, String username) {
         this.id = id;
+        this.chatId = chatId;
         this.username = username;
     }
 
-    //getters
-    public int getId() {
-        return id;
-    }
-    public String getUsername() {
-        return username;
-    }
-    //get user by id
-    public static User getUserById(int id) {
-        return users.get(id);
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    //add or return a user
-    public static User getOrCreateUser(int id,String username) {
-        if(users.containsKey(id)) {
-            return users.get(id);
-        }
-        else {
-            User user = new User(id,username);
-            users.put(id,user);
-            return user;
-        }
-    }
+    public long getChatId() { return chatId; }
+    public void setChatId(long chatId) { this.chatId = chatId; }
 
-    //return all users as a list
-    public static List<User> getAllUsers() {
-        return new ArrayList<>(users.values());
-    }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User u)) return false;
+        return chatId == u.chatId;
+        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(chatId);
+    }
+
+        @Override
     public String toString() {
-        return "username " + this.username+ " id " + this.id;
+        return "username " + this.username+ " id " + this.id + " chat id " + this.chatId;
     }
 }
