@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class    ChatGptClient {
+public class ChatGptClient {
 //    TODO: Responsibilities:
 //      - Send HTTP requests to OpenAI API with topic prompt.
 //      - Handle authentication, rate‑limit headers, and JSON responses.
@@ -56,7 +56,6 @@ public class    ChatGptClient {
 
             if (response.body() == null) throw new RuntimeException("No response :(");
             String responseBody = response.body().string();
-
 
             JSONObject obj = new JSONObject(responseBody);
             if (task.equals("clear-history")){
