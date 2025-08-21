@@ -22,7 +22,18 @@
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>6.9.7.1</version>
+        </dependency>
     </dependencies>
+
+
+
+
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
