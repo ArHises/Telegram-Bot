@@ -29,8 +29,10 @@ public class AnalysisService {
 //        System.out.println(survey);
 //        voteSimulation(survey);
 //        addSurvey(survey);
+
     }
 
+    @Deprecated
     public void voteSimulation(Survey survey){
         new Thread(() -> {
             Random random = new Random();
@@ -38,7 +40,7 @@ public class AnalysisService {
                 Set<String> answers = survey.getQuestions().get(i).getAnswers().keySet();
                 for (String ans : answers){
                     for (int j = 0; j < random.nextInt(1,6); j++) {
-                        survey.getQuestions().get(i).addVote(ans, new User(random.nextInt(),"user" + i + j));
+//                        survey.getQuestions().get(i).addVote(ans, new User(random.nextInt(),"user" + i + j));
                         try {
                             Thread.sleep(random.nextInt(1000,2000));
                         } catch (InterruptedException e) {
@@ -55,7 +57,7 @@ public class AnalysisService {
 
     public void addSurvey(Survey survey){
         this.surveys.add(survey);
-        this.chartPanel = new ChartPanel(survey);
+        this.chartPanel.setSurvey(survey);
         this.isActive = true;
     }
 

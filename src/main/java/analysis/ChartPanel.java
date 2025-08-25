@@ -25,6 +25,7 @@ public class ChartPanel extends JPanel {
     public ChartPanel(Survey survey) {
         this.survey = survey;
         this.chartRenderer = new ChartRenderer(this);
+        chartRenderer.start();
     }
 
     @Deprecated
@@ -75,6 +76,14 @@ public class ChartPanel extends JPanel {
         super.paintComponent(g);
 //        drawColumns(g,this.startX,this.startY);
         drawPies(g);
+    }
+
+    public Survey getSurvey() {
+        return survey;
+    }
+
+    public void setSurvey(Survey survey) {
+        this.survey = survey;
     }
 
     public void setPaused(boolean paused) {

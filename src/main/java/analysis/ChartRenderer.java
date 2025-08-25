@@ -12,6 +12,7 @@ public class ChartRenderer extends Thread {
 
     public ChartRenderer(ChartPanel chartPanel) {
         this.chartPanel = chartPanel;
+//        start();
     }
 
     public void setPaused(boolean paused) {
@@ -25,7 +26,6 @@ public class ChartRenderer extends Thread {
                 if (!paused) {
                     this.chartPanel.repaint();
                 }
-
                 try {
                     Thread.sleep(16); // Roughly 60 FPS (1000 ms / 60 ≈ 16.67)
                 } catch (InterruptedException ignored) {}

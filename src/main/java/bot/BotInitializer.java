@@ -39,4 +39,8 @@ public class BotInitializer {
             e.printStackTrace();
         }
     }
+
+    public Survey getSurvey() {
+        return survey;
+    }
 }

@@ -22,6 +22,7 @@ public class GptInputPanel extends JPanel {
             createSurvey(textField.getText());
             createBotInit(botInitializer);
             System.out.println(survey);
+            surveyFrame.switchToCharts();
         });
 
         add(button);
@@ -37,5 +38,7 @@ public class GptInputPanel extends JPanel {
                 new User(5,5,"test") , 5);
     }
 
-
+    public Survey getSurvey() {
+        return survey;
+    }
 }

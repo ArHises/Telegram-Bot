@@ -37,27 +37,27 @@ public class SurveyFrame extends JFrame {
         cardPanel.add(gptInputPanel , "gptInput");
         cardPanel.add(selectionPanel , "select");
 
-
         add(cardPanel);
         cardLayout.show(cardPanel, "select");
 
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
     }
 
     public void switchToCharts() {
         chartPanel.setPaused(false);
+        analysisService.addSurvey(gptInputPanel.getSurvey());
         cardLayout.show(cardPanel, "charts");
     }
 
     public void switchToGptInput() {
-        chartPanel.setPaused(false);
+        chartPanel.setPaused(true);
         cardLayout.show(cardPanel, "gptInput");
     }
 
     public void switchToSelection() {
+        chartPanel.setPaused(true);
         cardLayout.show(cardPanel, "selection");
     }
 }
