@@ -7,9 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SurveyFrame extends JFrame {
-//    TODO: Responsibilities:
-//      - Create windows and panels for survey.
-//      - Input fields for questions, answer options, topic keyword, and delay (minutes).
 
     private CardLayout cardLayout;
     private JPanel cardPanel;

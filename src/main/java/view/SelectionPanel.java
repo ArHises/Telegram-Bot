@@ -20,7 +20,6 @@ public class SelectionPanel extends JPanel {
         textArea.setHighlighter(null);
         textArea.setFocusable(false);
         add(textArea);
-
     }
 
     public void paintComponent(Graphics graphics){
