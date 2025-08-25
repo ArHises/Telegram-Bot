@@ -29,10 +29,18 @@ public class SurveyFrame extends JFrame {
 
         add(cardPanel);
         cardLayout.show(cardPanel, "Main Menu");
+        JFrame window = new JFrame();
+        window.setSize(1000 , 1000);
+        window.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        window.setResizable(true);
+        window.setLocationRelativeTo(null);
+        window.add(new SelectionPanel());
+
+        window.setVisible(true);
     }
 
     public void switchToCharts() {
-        chartPanel.setPaused(false);
-        cardLayout.show(cardPanel, "Instruction");
+        chartPanel.setPaused(false); // מחליף מסך לCHARTS
+        cardLayout.show(cardPanel, "charts");
     }
 }

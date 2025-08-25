@@ -23,11 +23,9 @@ public class BotController {
     public void handleUpdate(Update update , TelegramBot bot){
         try {
             if (update.hasMessage() && update.getMessage().hasText()){
-                System.out.println("Start path");
                 System.out.println(botService.getActiveSurvey().toString());
                 handleStartOrIgnore(update , bot);
             } else if (update.hasCallbackQuery()) {
-                System.out.println("Answer path");
                 handleAnswer(update.getCallbackQuery() , bot);
             }
         } catch (TelegramApiException e) {
@@ -37,7 +35,6 @@ public class BotController {
 
     private void handleStartOrIgnore(Update update, TelegramBot bot) throws TelegramApiException {
         long chatId = update.getMessage().getChatId();
-        System.out.println("????");
         String username = update.getMessage().getFrom().getUserName();
         if (username == null) {
             username = "unknown";
@@ -71,8 +68,8 @@ public class BotController {
                     }
                 }
             }
+        }
     }
-}
 
     private boolean isJoinCommand(String text) {
         return text.equalsIgnoreCase("/start")

@@ -56,7 +56,7 @@ public class AiSurveyGenerator {
             Question question = new Question(questionTopic,answers);
             survey.addQuestion(question);
         }
-
+        System.out.println("Survey initialized with gpt!");
         return survey;
     }
 }

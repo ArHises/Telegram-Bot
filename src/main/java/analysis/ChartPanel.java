@@ -8,7 +8,7 @@ import java.awt.*;
 public class ChartPanel extends JPanel {
 
     private Survey survey;
-    private ChartRenderer chartRenderer;
+    private ChartRenderer chartRenderer; // מעבד תרשימים
 
     public ChartPanel(Survey survey) {
         this.survey = survey;
@@ -16,7 +16,6 @@ public class ChartPanel extends JPanel {
     }
 
     public void updateCharts() {
-
     }
 
     @Override

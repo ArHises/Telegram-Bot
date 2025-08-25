@@ -14,6 +14,7 @@ public class BotService {
     private Survey activeSurvey;
 
 
+
     public BotService(Survey initialSurvey){
         this.activeSurvey = initialSurvey;
     }
@@ -108,7 +109,6 @@ public class BotService {
         }
 
         activeSurvey.getQuestions().get(currentQuestionIndex).addVote(chosenAnswer , voter);
-
 
         int nextQuestionIndex = currentQuestionIndex + 1;
         if (nextQuestionIndex < activeSurvey.getQuestions().size()){
