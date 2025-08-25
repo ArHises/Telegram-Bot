@@ -27,7 +27,7 @@ public class ChartRenderer extends Thread {
             }
 
             try {
-                Thread.sleep(16); // Roughly 60 FPS (1000 ms / 60 ≈ 16.67)
+                Thread.sleep(16); // Roughly 60 FPS (1000 ms / 60 ≈ 16.67) פריימים לשנייה
             } catch (InterruptedException ignored) {}
         }
     }

@@ -9,6 +9,11 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println("Cleaning memory... " + ChatGptClient.postClear());
+        System.out.println("balance: " + ChatGptClient.getBalance() + " calls left");
+
+        Survey survey = AiSurveyGenerator.generateSurvey("Capitals", new User(1, "Garik"), 5);
+        System.out.println(survey);
 
         TelegramBotsApi telegramBotsApi = null;
         try {
@@ -18,10 +23,20 @@ public class Main {
             throw new RuntimeException(e);
         }
 
-//        System.out.println("Cleaning memory... " + ChatGptClient.postClear());
-//        System.out.println("balance: " + ChatGptClient.getBalance() + " calls left");
+        // check all users
+//        User.getOrCreateUser(1902,"beni");
+//        System.out.println("All users:");
+//        for (User user : User.getAllUsers()) {
+//            System.out.println(user);
+//        }
 //
-//        Survey survey = AiSurveyGenerator.generateSurvey("dogs",new User(1,"Batya"),5);
-//        System.out.println(survey);
+//        // check specific user
+//        User check = User.getUserById(1);
+//        if (check != null) {
+//            System.out.println("User with ID 1 exists: " + check.getUsername());
+//        } else {
+//            System.out.println("User with ID 1 not found.");
+//        }
+//    }
     }
 }

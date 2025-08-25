@@ -11,7 +11,8 @@ public class BotService {
     private final UsersCsv usersCsv = new UsersCsv();
     private final Set<Long> chatIds = new HashSet<>();
     private final Map<Long , Integer> progressByChat = new HashMap<>();
-    private Survey activeSurvey; // סקר פעיל נוכחי יחיד
+    private Survey activeSurvey;
+
 
 
     public BotService(Survey initialSurvey){
@@ -40,18 +41,18 @@ public class BotService {
         return !isExistInCsv;
     }
 
-    public Set<Long> getChatIds(){
+    public Set<Long> getChatIds(){// אולי למחוק לא נחוץ
         return Collections.unmodifiableSet(chatIds);
     }
 
-    public String newMemberAnnouncement(String userName){
+    public String newMemberAnnouncement(String userName){ //this method will be used in if statement with registerIfNew = existed method
         int size = chatIds.size();
         return "New member : " + userName + "  Community size : " + size;
     }
 
     public void setActiveSurvey(Survey survey) {
         this.activeSurvey = survey;
-        progressByChat.clear();// מאפס מפה של כל המשתמשים
+        progressByChat.clear();
     }
 
     public Survey getActiveSurvey() {
@@ -64,73 +65,60 @@ public class BotService {
                 && !activeSurvey.getQuestions().isEmpty();
     }
 
-    public Integer startSurveyForChat(long chatId){
+    public boolean startSurveyForChat(long chatId){
         if (!hasActiveSurvey()){
-            return null;
+            return false;
         }
         progressByChat.put(chatId , 0);
-        return 0;
+        return true;
     }
 
     public Integer getCurrentIndex(Long chatId){
         return progressByChat.get(chatId);
     }
 
+    private boolean isValidQuestionIndex(int index){
+        return hasActiveSurvey() && index >= 0 &&
+                index < activeSurvey.getQuestions().size();
+    }
+
     public String getQuestion(int questionIndex){
-        if (!hasActiveSurvey()){
-            return "no active survey";
-        }
-        if (questionIndex < 0 || questionIndex >= activeSurvey.getQuestions().size()){
+        if (!isValidQuestionIndex(questionIndex)){
             return "invalid question index";
         }
         return activeSurvey.getQuestions().get(questionIndex).getQuestion();
     }
 
     public List<String> getOptionsForIndex(int questionIndex){
-        List<String> options = new ArrayList<>();
-        if (!hasActiveSurvey()){
+        if (!isValidQuestionIndex(questionIndex)){
             return null;
         }
-        if (questionIndex < 0 || questionIndex >= activeSurvey.getQuestions().size()){
-            return null;
-        }
-
-        Set<String> keys = activeSurvey.getQuestions().get(questionIndex).getAnswers().keySet();
-        for (String k : keys){
-            options.add(k);
-        }
-        return options;
+        return new ArrayList<>(activeSurvey.getQuestions().get(questionIndex).getAnswers().keySet());
     }
 
-    public Integer submitAnswerAndNext(User voter , Long chatId , String chosenAnswer){
+    public boolean submitAnswerAndNext(User voter , Long chatId , String chosenAnswer){
         if (!hasActiveSurvey()){
-            return null;
+            return false;
         }
         Integer currentQuestionIndex = progressByChat.get(chatId);
         if (currentQuestionIndex == null){
             return startSurveyForChat(chatId);
         }
-
-        int totalQuestions = activeSurvey.getQuestions().size();
-        if (currentQuestionIndex < 0 || currentQuestionIndex >= totalQuestions){
-            return null;
+        if (!isValidQuestionIndex(currentQuestionIndex)){
+            return false;
         }
 
         activeSurvey.getQuestions().get(currentQuestionIndex).addVote(chosenAnswer , voter);
 
-
         int nextQuestionIndex = currentQuestionIndex + 1;
-        if (nextQuestionIndex < totalQuestions){
+        if (nextQuestionIndex < activeSurvey.getQuestions().size()){
             progressByChat.put(chatId , nextQuestionIndex);
-            return nextQuestionIndex;
+            return true;
         }else {
             progressByChat.remove(chatId);
-            return null;
+            return false;
         }
     }
 
-    //    TODO: Responsibilities:
-//      - Enforce single active survey.
-//      - Collect answers and forward them to AnalysisService.
-//      - Schedule delayed sends (using a scheduler).
+
 }

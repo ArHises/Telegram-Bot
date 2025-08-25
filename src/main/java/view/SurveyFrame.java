@@ -7,9 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SurveyFrame extends JFrame {
-//    TODO: Responsibilities:
-//      - Create windows and panels for survey.
-//      - Input fields for questions, answer options, topic keyword, and delay (minutes).
 
     private CardLayout cardLayout;
     private JPanel cardPanel;
@@ -29,10 +26,18 @@ public class SurveyFrame extends JFrame {
 
         add(cardPanel);
         cardLayout.show(cardPanel, "Main Menu");
+        JFrame window = new JFrame();
+        window.setSize(1000 , 1000);
+        window.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        window.setResizable(true);
+        window.setLocationRelativeTo(null);
+        window.add(new SelectionPanel());
+
+        window.setVisible(true);
     }
 
     public void switchToCharts() {
-        chartPanel.setPaused(false);
-        cardLayout.show(cardPanel, "Instruction");
+        chartPanel.setPaused(false); // מחליף מסך לCHARTS
+        cardLayout.show(cardPanel, "charts");
     }
 }
