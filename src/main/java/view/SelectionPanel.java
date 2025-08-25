@@ -6,7 +6,7 @@ import java.awt.*;
 public class SelectionPanel extends JPanel {
     private Image backgroundImage;
 
-    public SelectionPanel(){
+    public SelectionPanel(SurveyFrame surveyFrame){
         backgroundImage = new ImageIcon(getClass().getResource("/telegram.jpeg"))
                 .getImage();
         JTextArea textArea = new JTextArea("Dear user! \n" +
@@ -20,6 +20,12 @@ public class SelectionPanel extends JPanel {
         textArea.setHighlighter(null);
         textArea.setFocusable(false);
         add(textArea);
+
+        JButton button = new JButton("go to chatGpt");
+        button.addActionListener(e -> {
+            surveyFrame.switchToGptInput();
+        });
+        add(button);
     }
 
     public void paintComponent(Graphics graphics){
