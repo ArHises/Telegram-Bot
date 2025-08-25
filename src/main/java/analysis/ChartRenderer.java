@@ -20,15 +20,16 @@ public class ChartRenderer extends Thread {
 
     @Override
     public void run() {
-        while (running) {
-            if (!paused) {
-                this.chartPanel.updateCharts();
-                this.chartPanel.repaint();
-            }
+        new Thread(() -> {
+            while (running) {
+                if (!paused) {
+                    this.chartPanel.repaint();
+                }
 
-            try {
-                Thread.sleep(16); // Roughly 60 FPS (1000 ms / 60 ≈ 16.67) פריימים לשנייה
-            } catch (InterruptedException ignored) {}
-        }
+                try {
+                    Thread.sleep(16); // Roughly 60 FPS (1000 ms / 60 ≈ 16.67)
+                } catch (InterruptedException ignored) {}
+            }
+        }).start();
     }
 }
