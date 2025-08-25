@@ -6,19 +6,21 @@ import model.User;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import view.SurveyFrame;
 
 public class Main {
     public static void main(String[] args) {
+        new SurveyFrame();
         System.out.println("Cleaning memory... " + ChatGptClient.postClear());
         System.out.println("balance: " + ChatGptClient.getBalance() + " calls left");
 
-        Survey survey = AiSurveyGenerator.generateSurvey("Capitals", new User(1, "Garik"), 5);
-        System.out.println(survey);
+//        Survey survey = AiSurveyGenerator.generateSurvey("Capitals", new User(1, "Garik"), 5);
+//        System.out.println(survey);
 
         TelegramBotsApi telegramBotsApi = null;
         try {
             telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(new TelegramBot());
+//            telegramBotsApi.registerBot(new TelegramBot());
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
