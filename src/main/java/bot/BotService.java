@@ -107,7 +107,6 @@ public class BotService {
         if (!isValidQuestionIndex(currentQuestionIndex)){
             return false;
         }
-
         activeSurvey.getQuestions().get(currentQuestionIndex).addVote(chosenAnswer , voter);
 
         int nextQuestionIndex = currentQuestionIndex + 1;

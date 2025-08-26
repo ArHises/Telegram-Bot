@@ -44,7 +44,6 @@ public class BotController {
             bot.execute(new SendMessage(String.valueOf(chatId), "To start the survey write : Hi , /Start or היי"));
             return;
         }
-
         User user = new User((int) chatId, chatId, username);
         boolean isNewMember = botService.registerIfNew(user);
         boolean surveyStarted = botService.startSurveyForChat(chatId);
@@ -59,7 +58,6 @@ public class BotController {
                 System.out.println("survey broken");
                 bot.execute(new SendMessage(String.valueOf(chatId) , "The survey is not available"));
             }
-
             if (isNewMember) {
                 String joinAnnouncement = botService.newMemberAnnouncement(username);
                 for (Long memberChatId : botService.getChatIds()) {
