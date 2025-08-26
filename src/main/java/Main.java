@@ -29,7 +29,7 @@ public class Main {
 
             // Build a User from the creator name typed in the dialog
             java.util.function.Function<String, model.User> userFactory =
-                    name -> new model.User(1, 123456789L, name); // use the 'name'!
+                    name -> new model.User(1, 123456789L, name);
 
             // Attach connector to THIS frame
             ManualSurveyConnector.attach(

@@ -6,9 +6,9 @@ public class Keys {
     //    Create this class in Util(this package)
 
         public class MyKeys {
-          public static final String MY_ID = "209299718";
-          public static final String MY_USERNAME = "My Username";
-          public static final String MY_BOT_TOKEN = "8182175157:AAGrT4vi06KHf2G2IboEMGF2-sjayUB6Dj0";
+          public static final String MY_ID = "your id";
+          public static final String MY_USERNAME = "bot Username";
+          public static final String MY_BOT_TOKEN = "bot token";
 
         }
 
