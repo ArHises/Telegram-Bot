@@ -1,7 +1,5 @@
 import ai.AiSurveyGenerator;
 import ai.ChatGptClient;
-import bot.BotController;
-import bot.BotService;
 import bot.TelegramBot;
 import model.Survey;
 import model.User;
