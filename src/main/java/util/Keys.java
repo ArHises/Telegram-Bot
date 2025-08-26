@@ -11,7 +11,7 @@ public class Keys {
 
     //    AND check if is added to .gitignore like this:
     //    src/main/java/util/MyKeys.java
-//    public static final String STUDENT_ID = MyKeys.MY_ID; // each one adds his own :)
-//    public static final String MY_BOT_TOKEN  = "123456:ABC...";
-//    public static final String MY_USERNAME   = "your_bot_username";
+    public static final String STUDENT_ID = MyKeys.MY_ID; // each one adds his own :)
+    public static final String MY_BOT_TOKEN  = MyKeys.MY_BOT_TOKEN;
+    public static final String MY_USERNAME   = MyKeys.MY_USERNAME;
 }

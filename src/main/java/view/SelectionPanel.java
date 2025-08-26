@@ -40,7 +40,7 @@ public class SelectionPanel extends JPanel {
 
         JButton createManualButton = createImageButton(
                 "/ManualSurvey.png", 400, 400,
-                e -> { }
+                e -> { surveyFrame.switchToManualInput(); }
         );
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 50));

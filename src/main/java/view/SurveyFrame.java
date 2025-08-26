@@ -16,6 +16,7 @@ public class SurveyFrame extends JFrame {
     private BotInitializer botInitializer;
 
     private GptInputPanel gptInputPanel;
+    private DynamicSurvey dynamicSurvey;
     private SelectionPanel selectionPanel;
 
     private AnalysisService analysisService;
@@ -30,12 +31,14 @@ public class SurveyFrame extends JFrame {
         analysisService = new AnalysisService();
         chartPanel = analysisService.getChartPanel();
         selectionPanel = new SelectionPanel(this);
+        dynamicSurvey = new DynamicSurvey(this);
 
         gptInputPanel = new GptInputPanel(this , botInitializer);
 
         cardPanel.add(chartPanel, "charts");
         cardPanel.add(gptInputPanel , "gptInput");
         cardPanel.add(selectionPanel , "select");
+        cardPanel.add(dynamicSurvey, "manualInput");
 
         add(cardPanel);
         cardLayout.show(cardPanel, "select");
@@ -57,6 +60,11 @@ public class SurveyFrame extends JFrame {
     public void switchToGptInput() {
         chartPanel.setPaused(true);
         cardLayout.show(cardPanel, "gptInput");
+    }
+
+    public void switchToManualInput() {
+        chartPanel.setPaused(true);
+        cardLayout.show(cardPanel, "manualInput");
     }
 
     public void switchToSelection() {

@@ -3,6 +3,8 @@ package view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class DynamicSurvey extends JPanel {
     private static final int MAX_QUESTIONS = 4;
@@ -12,11 +14,11 @@ public class DynamicSurvey extends JPanel {
     private final JButton runBtn = new JButton("Run");
 
     // keep data-only accessors; no model types used
-    private final java.util.ArrayList<JTextField> questionInputs = new java.util.ArrayList<>();
-    private final java.util.ArrayList<AnswerPanel> answerGroups = new java.util.ArrayList<>();
+    private final ArrayList<JTextField> questionInputs = new ArrayList<>();
+    private final ArrayList<AnswerPanel> answerGroups = new ArrayList<>();
     private int questionCount = 0;
 
-    public DynamicSurvey() {
+    public DynamicSurvey(SurveyFrame surveyFrame) {
         super(new BorderLayout());
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
@@ -38,13 +40,17 @@ public class DynamicSurvey extends JPanel {
         add(controls, BorderLayout.SOUTH);
 
         addQuestionBtn.addActionListener(e -> addQuestionBlock());
+        runBtn.addActionListener( e -> {
+            //TODO: create and pass the survey to ChartPanel...
+//            surveyFrame.switchToCharts();
+        });
 
         // start with one block
         addQuestionBlock();
     }
 
     /** Let parent (e.g., SurveyFrame) decide what to do on Run */
-    public void addRunListener(java.awt.event.ActionListener l) {
+    public void addRunListener(ActionListener l) {
         runBtn.addActionListener(l);
     }
 
