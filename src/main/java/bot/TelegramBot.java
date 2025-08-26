@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import util.MyKeys;
+import util.Keys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +32,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
     public String getBotToken(){
-        return MyKeys.MY_BOT_TOKEN;
+        return Keys.MY_BOT_TOKEN;
     }
 
     @Override
     public String getBotUsername() {
-        return MyKeys.MY_USERNAME;
+        return Keys.MY_USERNAME;
     }
 }
