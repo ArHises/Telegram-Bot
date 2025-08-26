@@ -39,17 +39,16 @@ public class DynamicSurvey extends JPanel {
         controls.add(runBtn);
         add(controls, BorderLayout.SOUTH);
 
-        addQuestionBtn.addActionListener(e -> addQuestionBlock());
-        runBtn.addActionListener( e -> {
-            //TODO: create and pass the survey to ChartPanel...
-//            surveyFrame.switchToCharts();
-        });
+//        addQuestionBtn.addActionListener(e -> addQuestionBlock());
+//        runBtn.addActionListener( e -> {
+// TODO: create and pass the survey to ChartPanel...
+////            surveyFrame.switchToCharts();
+//        });
 
         // start with one block
         addQuestionBlock();
     }
 
-    /** Let parent (e.g., SurveyFrame) decide what to do on Run */
     public void addRunListener(ActionListener l) {
         runBtn.addActionListener(l);
     }
@@ -95,7 +94,7 @@ public class DynamicSurvey extends JPanel {
         questionsContainer.repaint();
     }
 
-    // ===== Raw data getters (optional for parent to use) =====
+
     public java.util.ArrayList<String> getQuestions() {
         java.util.ArrayList<String> qs = new java.util.ArrayList<>(questionInputs.size());
         for (JTextField f : questionInputs) qs.add(f.getText().trim());

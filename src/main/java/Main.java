@@ -9,6 +9,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import view.GptInputPanel;
 import view.SelectionPanel;
 import view.SurveyFrame;
+import view.ManualSurveyConnector;
 
 import javax.swing.*;
 
@@ -16,13 +17,38 @@ import java.awt.*;
 
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
+
+//User creator = new User(1, 123456789L, "testuser");
+
 public class Main {
     public static void main(String[] args) {
 
-        SwingUtilities.invokeLater(() -> {
-            SurveyFrame surveyFrame = new SurveyFrame();
-            surveyFrame.setVisible(true);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            // ONE frame only
+            SurveyFrame frame = new SurveyFrame();
+
+            // Build a User from the creator name typed in the dialog
+            java.util.function.Function<String, model.User> userFactory =
+                    name -> new model.User(1, 123456789L, name); // use the 'name'!
+
+            // Attach connector to THIS frame
+            ManualSurveyConnector.attach(
+                    frame,
+                    userFactory,
+                    survey -> {
+                        System.out.println("\n=== SURVEY BUILT ===\n" + survey + "\n");
+                        javax.swing.JOptionPane.showMessageDialog(
+                                frame, survey.toString(), "Survey Built",
+                                javax.swing.JOptionPane.INFORMATION_MESSAGE
+                        );
+                        // e.g. botService.setActiveSurvey(survey);
+                    }
+            );
+
+            frame.setVisible(true);
         });
+    }
+}
 //        try {
 //            // Step 1: Create a User (id, chatId, username)
 //            User creator = new User(1, 123456789L, "testuser");
@@ -46,5 +72,3 @@ public class Main {
 //            System.err.println("General Exception: " + e.getMessage());
 //            e.printStackTrace();
 //        }
-    }
-}
