@@ -40,9 +40,12 @@ public class SurveyFrame extends JFrame {
         add(cardPanel);
         cardLayout.show(cardPanel, "select");
 
-        setSize(800, 600);
+        setSize(1200, 800);
+//        setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        setUndecorated(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     public void switchToCharts() {

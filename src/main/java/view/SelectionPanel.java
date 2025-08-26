@@ -7,12 +7,8 @@ import java.awt.event.ActionListener;
 public class SelectionPanel extends JPanel {
 
     private Image backgroundImage;
-    private Runnable openGotSurvey;
-    private Runnable openMobileSurvey;
 
-
-    public SelectionPanel() {
-
+    public SelectionPanel(SurveyFrame surveyFrame) {
 
         backgroundImage = new ImageIcon(getClass().getResource("/TelegramPhoto.jpg"))
                 .getImage();
@@ -37,20 +33,20 @@ public class SelectionPanel extends JPanel {
         add(textArea, BorderLayout.NORTH);
 
         // ----- כפתורים -----
-        JButton gotSurveyButton = createImageButton(
+        JButton createWithAiButton = createImageButton(
                 "/ChatGptSurvey.png", 400, 400,
-                e -> { if (openGotSurvey != null) openGotSurvey.run(); }
+                e -> { surveyFrame.switchToGptInput(); }
         );
 
-        JButton mobileSurveyButton = createImageButton(
+        JButton createManualButton = createImageButton(
                 "/ManualSurvey.png", 400, 400,
-                e -> { if (openMobileSurvey != null) openMobileSurvey.run(); }
+                e -> { }
         );
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 50));
         buttonsPanel.setOpaque(false);
-        buttonsPanel.add(gotSurveyButton);
-        buttonsPanel.add(mobileSurveyButton);
+        buttonsPanel.add(createWithAiButton);
+        buttonsPanel.add(createManualButton);
 
         // ----- שליטה מדויקת בגובה הכפתורים -----
         int buttonsOffsetPixels = 180; // <<<<<< תשני את המספר כדי להזיז למעלה/למטה
@@ -65,21 +61,7 @@ public class SelectionPanel extends JPanel {
         add(positioningPanel, BorderLayout.CENTER);
     }
 
-
-    public void setOpenGotSurvey(Runnable openGotSurvey) {
-        this.openGotSurvey = openGotSurvey;
-    }
-
-    public void setOpenMobileSurvey(Runnable openMobileSurvey) {
-        this.openMobileSurvey = openMobileSurvey;
-    }
-
-
-
     private JButton createImageButton(String imagePath, int width, int height, ActionListener action){
-
-
-
         JButton button = new JButton();
 
         // טוען תמונה מה-resources ומקטין אותה לגודל הרצוי
@@ -98,8 +80,6 @@ public class SelectionPanel extends JPanel {
 
         return button;
     }
-
-
 
     public void paintComponent(Graphics graphics){
         super.paintComponent(graphics);
