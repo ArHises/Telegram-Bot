@@ -10,17 +10,16 @@ import javax.swing.*;
 public class GptInputPanel extends JPanel {
     private Survey survey;
 
-    public GptInputPanel(SurveyFrame surveyFrame , BotInitializer botInitializer){
+    public GptInputPanel(SurveyFrame surveyFrame){
         JTextField textField = new JTextField(20);
         JLabel label = new JLabel("please write topic");
         add(label);
         add(textField);
 
         JButton button = new JButton("submit");
-
         button.addActionListener(e -> {
             createSurvey(textField.getText());
-            createBotInit(botInitializer);
+            startBotWithSurvey();
             System.out.println(survey);
             surveyFrame.switchToCharts();
         });
@@ -28,14 +27,14 @@ public class GptInputPanel extends JPanel {
         add(button);
     }
 
-    private void createBotInit(BotInitializer botInitializer){
-        botInitializer = new BotInitializer(survey);
+    private void startBotWithSurvey(){
+        BotInitializer botInitializer = new BotInitializer(survey);
         botInitializer.startBot();
     }
 
     private void createSurvey(String topic){
         survey = AiSurveyGenerator.generateSurvey(topic ,
-                new User(5,5,"test") , 5);
+                new User(5,5,"test") , 0);
     }
 
     public Survey getSurvey() {

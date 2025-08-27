@@ -18,8 +18,8 @@ public class BotInitializer {
 
     public void startBot(){
         try {
-            // Step 1: Create a User (id, chatId, username)
-            User creator = new User(1, 123456789L, "testuser");
+//            // Step 1: Create a User (id, chatId, username)
+//            User creator = new User(1, 123456789L, "testuser");
 
             // Step 3: Create BotService with the Survey
             BotService botService = new BotService(survey);
@@ -31,6 +31,17 @@ public class BotInitializer {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(telegramBot);
             System.out.println("Bot is running and connected!");
+
+            boolean ok = botService.setActiveSurveyIfAllowed(survey);
+            if (!ok){
+                System.out.println("Survey not activated : we need 3 or more members and no existing survey");
+                return;
+            }
+
+            boolean launched = botService.launchSurveyNow();
+            System.out.println("survey launched " + launched);
+
+
         } catch (TelegramApiException e) {
             System.err.println("Telegram API Exception: " + e.getMessage());
             e.printStackTrace();

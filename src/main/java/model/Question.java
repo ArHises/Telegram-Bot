@@ -21,14 +21,20 @@ public class Question {
     }
 
     /**
-     * @param question the question topic
+     * @param answer the question topic
      * @param user user to add to the topic
      * Add a new vote to question
      */
-    public void addVote(String question,User user){
-        List<User> users = this.answers.get(question);
-        users.add(user);
-        this.answers.put(question,users);
+    public void addVote(String answer,User user){
+       for (List<User> voters : answers.values()){
+           if (voters.contains(user)){
+               return;
+           }
+       }
+       List<User> users = this.answers.get(answer);
+       if (users != null){
+           users.add(user);
+       }
     }
 
     public String getQuestion() {

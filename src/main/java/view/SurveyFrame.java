@@ -13,8 +13,6 @@ public class SurveyFrame extends JFrame {
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
-    private BotInitializer botInitializer;
-
     private GptInputPanel gptInputPanel;
     private DynamicSurvey dynamicSurvey;
     private SelectionPanel selectionPanel;
@@ -24,7 +22,6 @@ public class SurveyFrame extends JFrame {
 
     public SurveyFrame() {
 
-        botInitializer = null;
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
@@ -33,7 +30,7 @@ public class SurveyFrame extends JFrame {
         selectionPanel = new SelectionPanel(this);
         dynamicSurvey = new DynamicSurvey(this);
 
-        gptInputPanel = new GptInputPanel(this , botInitializer);
+        gptInputPanel = new GptInputPanel(this);
 
         cardPanel.add(chartPanel, "charts");
         cardPanel.add(gptInputPanel , "gptInput");
