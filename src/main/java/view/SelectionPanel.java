@@ -4,16 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class SelectionPanel extends JPanel {
+import static view.Buttons.createImageButton;
 
-    private Image backgroundImage;
+public class SelectionPanel extends BackgroundPanel {
+
 
     public SelectionPanel(SurveyFrame surveyFrame) {
-
-        backgroundImage = new ImageIcon(getClass().getResource("/TelegramPhoto.jpg"))
-                .getImage();
-
-        setOpaque(false);
+        super("/TelegramPhoto.jpg");
         setLayout(new BorderLayout());
 
         // ----- טקסט למעלה -----
@@ -35,12 +32,14 @@ public class SelectionPanel extends JPanel {
         // ----- כפתורים -----
         JButton createWithAiButton = createImageButton(
                 "/ChatGptSurvey.png", 400, 400,
-                e -> { surveyFrame.switchToGptInput(); }
+                e -> {
+                    surveyFrame.switchToGptInput(); }
         );
 
         JButton createManualButton = createImageButton(
                 "/ManualSurvey.png", 400, 400,
-                e -> { surveyFrame.switchToManualInput(); }
+                e -> {
+                    surveyFrame.switchToManualInput(); }
         );
 
         JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 50));
@@ -61,29 +60,8 @@ public class SelectionPanel extends JPanel {
         add(positioningPanel, BorderLayout.CENTER);
     }
 
-    private JButton createImageButton(String imagePath, int width, int height, ActionListener action){
-        JButton button = new JButton();
 
-        // טוען תמונה מה-resources ומקטין אותה לגודל הרצוי
-        ImageIcon icon = new ImageIcon(getClass().getResource(imagePath));
-        Image scaledImage = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        button.setIcon(new ImageIcon(scaledImage));
 
-        // הופך את הכפתור ל"שקוף" (רק התמונה תיראה)
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
-        button.setOpaque(false);
 
-        // פעולה בלחיצה
-        button.addActionListener(action);
-
-        return button;
-    }
-
-    public void paintComponent(Graphics graphics){
-        super.paintComponent(graphics);
-        graphics.drawImage( backgroundImage , 0 , 0 , getWidth(), getHeight() , this);
-    }
 
 }

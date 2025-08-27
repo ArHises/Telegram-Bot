@@ -6,26 +6,46 @@ import model.Survey;
 import model.User;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class GptInputPanel extends JPanel {
+import static view.Buttons.createImageButton;
+
+public class GptInputPanel extends BackgroundPanel {
     private Survey survey;
 
     public GptInputPanel(SurveyFrame surveyFrame , BotInitializer botInitializer){
-        JTextField textField = new JTextField(20);
+        super("/TelegramPhoto.jpg");
+
+        setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
+
         JLabel label = new JLabel("please write topic");
+        label.setForeground(Color.WHITE);                         // לבן
+        label.setFont(label.getFont().deriveFont(Font.BOLD, 25f)); // מודגש + גדול
+
+        JTextField textField = new JTextField(25);               // אותו אורך (20)
+        Dimension dimension = textField.getPreferredSize();           // מעבים רק את הגובה
+        dimension.height = 39;                                        // נסי 36–40 לפי טעם
+        textField.setPreferredSize(dimension);
+
         add(label);
         add(textField);
 
-        JButton button = new JButton("submit");
 
-        button.addActionListener(e -> {
+
+
+        JButton submitButton = createImageButton("/submitButton.png",200,200,e->{
+
+
             createSurvey(textField.getText());
             createBotInit(botInitializer);
             System.out.println(survey);
             surveyFrame.switchToCharts();
-        });
 
-        add(button);
+                }
+
+        );
+        add(submitButton);
+
     }
 
     private void createBotInit(BotInitializer botInitializer){
