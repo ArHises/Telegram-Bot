@@ -8,7 +8,8 @@ public class AnswerPanel extends JPanel {
     private static final int START_ANSWERS = 2;
 
     private final JPanel answersPanel = new JPanel();
-    private final JButton addAnswerBtn = new JButton("Add Answer");
+    private JButton addAnswerBtn; // image button
+
     private final java.util.ArrayList<JTextField> answerFields = new java.util.ArrayList<>();
 
     public AnswerPanel() {
@@ -23,15 +24,23 @@ public class AnswerPanel extends JPanel {
 
         add(answersPanel, BorderLayout.CENTER);
 
-        addAnswerBtn.addActionListener(e -> {
-            if (answerFields.size() < MAX_ANSWERS) addAnswerField();
-            addAnswerBtn.setEnabled(answerFields.size() < MAX_ANSWERS);
-        });
+        // Image button for "Add Answer"
+        addAnswerBtn = Buttons.createImageButton(
+                "/add_answer_button.png", 90, 36,
+                e -> {
+                    if (answerFields.size() < MAX_ANSWERS) addAnswerField();
+                    updateAddEnabled();
+                }
+        );
+        addAnswerBtn.setToolTipText("Add Answer");
 
         JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         btnRow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        btnRow.setOpaque(false);
         btnRow.add(addAnswerBtn);
         add(btnRow, BorderLayout.SOUTH);
+
+        updateAddEnabled();
     }
 
     private void addAnswerField() {
@@ -39,6 +48,7 @@ public class AnswerPanel extends JPanel {
 
         JPanel row = new JPanel(new BorderLayout(6, 6));
         row.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        row.setOpaque(false);
 
         JLabel label = new JLabel("Answer " + idx + ":");
         JTextField field = new JTextField();
@@ -55,9 +65,16 @@ public class AnswerPanel extends JPanel {
         repaint();
     }
 
+    private void updateAddEnabled() {
+        if (addAnswerBtn != null) {
+            addAnswerBtn.setEnabled(answerFields.size() < MAX_ANSWERS);
+        }
+    }
+
     public java.util.ArrayList<String> getAnswers() {
         java.util.ArrayList<String> out = new java.util.ArrayList<>(answerFields.size());
         for (JTextField f : answerFields) out.add(f.getText().trim());
         return out;
     }
 }
+

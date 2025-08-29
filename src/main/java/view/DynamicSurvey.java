@@ -10,10 +10,10 @@ public class DynamicSurvey extends JPanel {
     private static final int MAX_QUESTIONS = 4;
 
     private final JPanel questionsContainer = new JPanel();
-    private final JButton addQuestionBtn = new JButton("Add Question");
-    private final JButton runBtn = new JButton("Run");
+    private JButton addQuestionBtn;   // image button
+    private JButton runBtn;           // image button
 
-    // keep data-only accessors; no model types used
+    // data-only
     private final ArrayList<JTextField> questionInputs = new ArrayList<>();
     private final ArrayList<AnswerPanel> answerGroups = new ArrayList<>();
     private int questionCount = 0;
@@ -22,6 +22,7 @@ public class DynamicSurvey extends JPanel {
         super(new BorderLayout());
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
+        // questions area
         questionsContainer.setLayout(new BoxLayout(questionsContainer, BoxLayout.Y_AXIS));
         questionsContainer.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
@@ -33,23 +34,29 @@ public class DynamicSurvey extends JPanel {
         scroll.setBorder(new EmptyBorder(12, 12, 12, 12));
         add(scroll, BorderLayout.CENTER);
 
+        addQuestionBtn = Buttons.createImageButton(
+                "/add_question_button.png", 90, 42,
+                e -> addQuestionBlock()
+        );
+        addQuestionBtn.setToolTipText("Add Question");
+
+        runBtn = Buttons.createImageButton(
+                "/run_button.png", 50, 42,
+                null
+        );
+        runBtn.setToolTipText("Run");
+
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         controls.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         controls.add(addQuestionBtn);
         controls.add(runBtn);
         add(controls, BorderLayout.SOUTH);
 
-        addQuestionBtn.addActionListener(e -> addQuestionBlock());
-        runBtn.addActionListener( e -> {
-            //TODO: create and pass the survey to ChartPanel...
-//            surveyFrame.switchToCharts();
-        });
-
         // start with one block
         addQuestionBlock();
+        updateButtonsState();
     }
 
-    /** Let parent (e.g., SurveyFrame) decide what to do on Run */
     public void addRunListener(ActionListener l) {
         runBtn.addActionListener(l);
     }
@@ -75,7 +82,7 @@ public class DynamicSurvey extends JPanel {
         qRow.add(qLabel, BorderLayout.LINE_START);
         qRow.add(qField, BorderLayout.CENTER);
 
-        // Answers UI (no logic)
+        // Answers UI
         AnswerPanel answers = new AnswerPanel();
 
         block.add(qRow);
@@ -89,22 +96,27 @@ public class DynamicSurvey extends JPanel {
         questionInputs.add(qField);
         answerGroups.add(answers);
 
-        addQuestionBtn.setEnabled(questionCount < MAX_QUESTIONS);
-
+        updateButtonsState();
         questionsContainer.revalidate();
         questionsContainer.repaint();
     }
 
-    // ===== Raw data getters (optional for parent to use) =====
-    public java.util.ArrayList<String> getQuestions() {
-        java.util.ArrayList<String> qs = new java.util.ArrayList<>(questionInputs.size());
+    private void updateButtonsState() {
+        if (addQuestionBtn != null) {
+            addQuestionBtn.setEnabled(questionCount < MAX_QUESTIONS);
+        }
+    }
+
+    public ArrayList<String> getQuestions() {
+        ArrayList<String> qs = new ArrayList<>(questionInputs.size());
         for (JTextField f : questionInputs) qs.add(f.getText().trim());
         return qs;
     }
 
-    public java.util.ArrayList<java.util.ArrayList<String>> getAllAnswers() {
-        java.util.ArrayList<java.util.ArrayList<String>> all = new java.util.ArrayList<>(answerGroups.size());
+    public ArrayList<ArrayList<String>> getAllAnswers() {
+        ArrayList<ArrayList<String>> all = new ArrayList<>(answerGroups.size());
         for (AnswerPanel ap : answerGroups) all.add(ap.getAnswers());
         return all;
     }
 }
+
