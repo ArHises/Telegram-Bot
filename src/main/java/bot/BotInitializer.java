@@ -25,9 +25,7 @@ public class BotInitializer {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(telegramBot);
             System.out.println("Bot is running and connected!");
-        } catch (TelegramApiException e) {
-            System.err.println("Telegram API Exception: " + e.getMessage());
-            e.printStackTrace();
+
         } catch (Exception e) {
             System.err.println("General Exception: " + e.getMessage());
             e.printStackTrace();
