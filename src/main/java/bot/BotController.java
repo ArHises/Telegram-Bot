@@ -48,11 +48,7 @@ public class BotController {
             handleSurveyState(bot, chatId);
             return;
         }
-        if (!botService.getActiveSurvey().isAvailable()) {
-            String timeLeft = botService.getActiveSurvey().getTimeUntilAvailable();
-            bot.execute(new SendMessage(String.valueOf(chatId), "The survey will start in: " + timeLeft));
-            return;
-        }
+        // Register user and count members even if survey is delayed
         User user = extractUserFromUpdate(update);
         boolean isNewMember = botService.registerIfNew(user);
         if (isNewMember){
@@ -61,6 +57,16 @@ public class BotController {
         int size = botService.getChatIds().size();
         if (size < MIN_MEMBERS){
             handleMemberCount(bot, chatId, size);
+            // If survey is not available, also inform about delay
+            if (!botService.getActiveSurvey().isAvailable()) {
+                String timeLeft = botService.getActiveSurvey().getTimeUntilAvailable();
+                bot.execute(new SendMessage(String.valueOf(chatId), "The survey will start in: " + timeLeft));
+            }
+            return;
+        }
+        if (!botService.getActiveSurvey().isAvailable()) {
+            String timeLeft = botService.getActiveSurvey().getTimeUntilAvailable();
+            bot.execute(new SendMessage(String.valueOf(chatId), "The survey will start in: " + timeLeft));
             return;
         }
         if (!waitingToStart.isEmpty()){
