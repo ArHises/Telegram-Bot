@@ -20,31 +20,50 @@ public class GptInputPanel extends BackgroundPanel {
         setBorder(BorderFactory.createEmptyBorder(40, 0, 0, 0));
 
         JLabel label = new JLabel("please write topic");
-        label.setForeground(Color.WHITE);                         // לבן
-        label.setFont(label.getFont().deriveFont(Font.BOLD, 25f)); // מודגש + גדול
+        label.setForeground(Color.WHITE);
+        label.setFont(label.getFont().deriveFont(Font.BOLD, 25f));
 
-        JTextField textField = new JTextField(25);               // אותו אורך (20)
-        Dimension dimension = textField.getPreferredSize();           // מעבים רק את הגובה
-        dimension.height = 39;                                        // נסי 36–40 לפי טעם
+        JTextField textField = new JTextField(25);
+        Dimension dimension = textField.getPreferredSize();
+        dimension.height = 39;
         textField.setPreferredSize(dimension);
 
-        add(label);
-        add(textField);
+        JLabel delayLabel = new JLabel("Delay (minutes):");
+        delayLabel.setForeground(Color.WHITE);
+        delayLabel.setFont(delayLabel.getFont().deriveFont(Font.PLAIN, 18f));
+        JTextField delayField = new JTextField("0", 5);
+        Dimension delayDim = delayField.getPreferredSize();
+        delayDim.height = 36;
+        delayField.setPreferredSize(delayDim);
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.setOpaque(false);
+        inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 16, 0));
+        inputPanel.add(label);
+        inputPanel.add(textField);
+        inputPanel.add(delayLabel);
+        inputPanel.add(delayField);
+        add(inputPanel);
 
         JButton submitButton = createImageButton("/submitButton.png",200,200,e->{
-            createSurvey(textField.getText());
+            int delayMinutes = 0;
+            try {
+                delayMinutes = Integer.parseInt(delayField.getText().trim());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid delay value. Please enter a number.");
+                return;
+            }
+            createSurvey(textField.getText(), delayMinutes);
             createBotInit(botInitializer, survey);
             System.out.println(survey);
             surveyFrame.switchToCharts();
-        }
-
-        );
+        });
         add(submitButton);
     }
 
-    private void createSurvey(String topic){
+    private void createSurvey(String topic, int delayMinutes){
         survey = AiSurveyGenerator.generateSurvey(topic ,
-                new User(5,5,"test") , 5);
+                new User(5,5,"test") , delayMinutes);
     }
 
     public Survey getSurvey() {

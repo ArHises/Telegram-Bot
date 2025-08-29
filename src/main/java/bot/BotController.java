@@ -44,6 +44,11 @@ public class BotController {
             bot.execute(new SendMessage(String.valueOf(chatId), "To start the survey write : Hi , /Start or היי"));
             return;
         }
+        if (!botService.getActiveSurvey().isAvailable()) {
+            String timeLeft = botService.getActiveSurvey().getTimeUntilAvailable();
+            bot.execute(new SendMessage(String.valueOf(chatId), "The survey will start in: " + timeLeft));
+            return;
+        }
         User user = new User((int) chatId, chatId, username);
         boolean isNewMember = botService.registerIfNew(user);
         boolean surveyStarted = botService.startSurveyForChat(chatId);

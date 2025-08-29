@@ -18,14 +18,8 @@ public class BotInitializer {
 
     public void startBot(){
         try {
-            // Step 1: Create a User (id, chatId, username)
-            User creator = new User(1, 123456789L, "testuser");
-
-            // Step 3: Create BotService with the Survey
             BotService botService = new BotService(survey);
-            // Step 4: Create BotController with BotService
             BotController botController = new BotController(botService);
-            // Step 5: Create TelegramBot with BotController
             TelegramBot telegramBot = new TelegramBot(botController);
 
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);

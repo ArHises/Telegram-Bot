@@ -30,7 +30,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         controller.handleUpdate(update , this);
     }
 
-
     public String getBotToken(){
         return Keys.MY_BOT_TOKEN;
     }

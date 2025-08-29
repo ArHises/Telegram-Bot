@@ -66,6 +66,26 @@ public class Survey {
         this.questions = questions;
     }
 
+    /**
+     * Returns true if the survey is available (current time is after delay).
+     */
+    public boolean isAvailable() {
+        return new Date().after(delay);
+    }
+
+    /**
+     * Returns the time remaining until the survey is available, as hh:mm:ss.
+     */
+    public String getTimeUntilAvailable() {
+        long millis = delay.getTime() - System.currentTimeMillis();
+        if (millis <= 0) return "00:00:00";
+        long totalSeconds = millis / 1000;
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
     @Override
     public String toString() {
         return "Survey{" +

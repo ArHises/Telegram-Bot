@@ -7,15 +7,16 @@ import java.net.URL;
 
 public final class Buttons {
 
-  private Buttons(){
+    private Buttons() {
 
-  }
-    public static JButton createImageButton(String imagePath, int width, int height, ActionListener action){
+    }
+
+    public static JButton createImageButton(String imagePath, int width, int height, ActionListener action) {
         JButton button = new JButton();
 
         URL url = Buttons.class.getResource(imagePath);
 
-        if (url != null){
+        if (url != null) {
             // טוען תמונה מה-resources ומקטין אותה לגודל הרצוי
             ImageIcon icon = new ImageIcon(url);
             Image scaledImage = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
@@ -35,13 +36,4 @@ public final class Buttons {
         }
         return button;
     }
-
-
-
-
-
-
-
-
-
 }
