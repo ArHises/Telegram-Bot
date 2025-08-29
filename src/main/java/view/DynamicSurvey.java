@@ -1,110 +1,167 @@
 package view;
 
+import bot.BotInitializer;
+import model.Question;
+import model.Survey;
+import model.User;
+
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
+
+import static util.Utils.createBotInit;
 
 public class DynamicSurvey extends JPanel {
     private static final int MAX_QUESTIONS = 4;
 
     private final JPanel questionsContainer = new JPanel();
     private final JButton addQuestionBtn = new JButton("Add Question");
-    private final JButton runBtn = new JButton("Run");
+    private final JButton submitButton = new JButton("Submit");
 
-    // keep data-only accessors; no model types used
-    private final ArrayList<JTextField> questionInputs = new ArrayList<>();
-    private final ArrayList<AnswerPanel> answerGroups = new ArrayList<>();
+    private final List<JTextField> questionInputs = new ArrayList<>();
+    private final List<AnswerPanel> answerGroups = new ArrayList<>();
     private int questionCount = 0;
 
-    public DynamicSurvey(SurveyFrame surveyFrame) {
-        super(new BorderLayout());
+    private Survey savedSurvey; // Stores the created Survey object
+    private JTextField delayField = new JTextField("0", 5); // Field for delay in minutes
+
+    public DynamicSurvey(SurveyFrame surveyFrame, BotInitializer botInitializer) {
+        super(new GridBagLayout()); // Use GridBagLayout for centralization
+
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(20, 20, 20, 20);
+        gbc.fill = GridBagConstraints.NONE;
 
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topPanel.add(new JLabel("Delay (minutes): "));
+        topPanel.add(delayField);
+        add(topPanel, gbc);
+
+        gbc.gridy++;
         questionsContainer.setLayout(new BoxLayout(questionsContainer, BoxLayout.Y_AXIS));
-        questionsContainer.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(questionsContainer);
+        scrollPane.setPreferredSize(new Dimension(500, 350));
+        scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(scrollPane);
+        add(centerPanel, gbc);
 
-        JScrollPane scroll = new JScrollPane(
-                questionsContainer,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER
-        );
-        scroll.setBorder(new EmptyBorder(12, 12, 12, 12));
-        add(scroll, BorderLayout.CENTER);
-
-        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        controls.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        gbc.gridy++;
+        JPanel controls = new JPanel(new FlowLayout(FlowLayout.CENTER));
         controls.add(addQuestionBtn);
-        controls.add(runBtn);
-        add(controls, BorderLayout.SOUTH);
+        controls.add(submitButton);
+        add(controls, gbc);
 
         addQuestionBtn.addActionListener(e -> addQuestionBlock());
-        runBtn.addActionListener( e -> {
-            //TODO: create and pass the survey to ChartPanel...
-//            surveyFrame.switchToCharts();
+        submitButton.addActionListener(e -> {
+            savedSurvey = getDataFromFields();
+            if(savedSurvey == null) return; // Validation failed
+            createBotInit(botInitializer, savedSurvey);
+            System.out.println(savedSurvey);
+            surveyFrame.switchToCharts();
         });
 
-        // start with one block
         addQuestionBlock();
-    }
-
-    /** Let parent (e.g., SurveyFrame) decide what to do on Run */
-    public void addRunListener(ActionListener l) {
-        runBtn.addActionListener(l);
     }
 
     private void addQuestionBlock() {
         if (questionCount >= MAX_QUESTIONS) return;
-        int qNumber = ++questionCount;
-
         JPanel block = new JPanel();
         block.setLayout(new BoxLayout(block, BoxLayout.Y_AXIS));
-        block.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         block.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(210, 210, 210)),
-                new EmptyBorder(10, 10, 10, 10)
+            BorderFactory.createLineBorder(new Color(180, 180, 180)),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
-
-        JLabel qLabel = new JLabel("Question " + qNumber + ":");
-        JTextField qField = new JTextField();
-        qField.setColumns(28);
-
-        JPanel qRow = new JPanel(new BorderLayout(6, 6));
-        qRow.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        qRow.add(qLabel, BorderLayout.LINE_START);
-        qRow.add(qField, BorderLayout.CENTER);
-
-        // Answers UI (no logic)
+        JTextField questionField = new JTextField(28);
         AnswerPanel answers = new AnswerPanel();
-
-        block.add(qRow);
-        block.add(Box.createVerticalStrut(8));
+        block.add(new JLabel("Question " + (questionCount + 1) + ":"));
+        block.add(Box.createVerticalStrut(6));
+        block.add(questionField);
+        block.add(Box.createVerticalStrut(6));
         block.add(answers);
-        block.add(Box.createVerticalStrut(12));
-
-        questionsContainer.add(block);
-        questionsContainer.add(Box.createVerticalStrut(10));
-
-        questionInputs.add(qField);
+        questionInputs.add(questionField);
         answerGroups.add(answers);
-
-        addQuestionBtn.setEnabled(questionCount < MAX_QUESTIONS);
-
+        questionsContainer.add(block);
+        questionsContainer.add(Box.createVerticalStrut(16)); // Separation between questions
         questionsContainer.revalidate();
         questionsContainer.repaint();
+        questionCount++;
+        addQuestionBtn.setEnabled(questionCount < MAX_QUESTIONS);
     }
 
-    // ===== Raw data getters (optional for parent to use) =====
-    public java.util.ArrayList<String> getQuestions() {
-        java.util.ArrayList<String> qs = new java.util.ArrayList<>(questionInputs.size());
-        for (JTextField f : questionInputs) qs.add(f.getText().trim());
-        return qs;
+    private Survey getDataFromFields(){
+        List<String> questions = getQuestions();
+        List<List<String>> allAnswers = getAllAnswers();
+        int delay = 0;
+        try {
+            delay = Integer.parseInt(delayField.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid delay value. Please enter a number.");
+            return null;
+        }
+        // Validation: 1 to 3 questions
+        int validQuestions = 0;
+        for (int i = 0; i < questions.size(); i++) {
+            String questionText = questions.get(i).trim();
+            List<String> answers = (i < allAnswers.size()) ? allAnswers.get(i) : new ArrayList<>();
+            // Remove empty and duplicate answers
+            List<String> filteredAnswers = answers.stream()
+                    .map(String::trim)
+                    .filter(a -> !a.isEmpty())
+                    .distinct()
+                    .toList();
+            if (!questionText.isEmpty() && filteredAnswers.size() >= 2 && filteredAnswers.size() <= 4) {
+                validQuestions++;
+            }
+        }
+        if (validQuestions < 1 || validQuestions > 3) {
+            JOptionPane.showMessageDialog(this, "You must provide 1 to 3 questions, each with 2 to 4 unique, non-empty answers.");
+            return null;
+        }
+        User creator = null; // TODO: Replace with actual creator
+        String topic = "Manual Survey"; // TODO: Replace with actual topic
+        Survey survey = new Survey(creator, topic, delay);
+        for (int i = 0; i < questions.size(); i++) {
+            String questionText = questions.get(i).trim();
+            List<String> answers = (i < allAnswers.size()) ? allAnswers.get(i) : new ArrayList<>();
+            // Remove empty and duplicate answers
+            List<String> filteredAnswers = answers.stream()
+                    .map(String::trim)
+                    .filter(a -> !a.isEmpty())
+                    .distinct()
+                    .toList();
+            if (!questionText.isEmpty() && filteredAnswers.size() >= 2 && filteredAnswers.size() <= 4) {
+                Question q = new Question(questionText, filteredAnswers);
+                survey.addQuestion(q);
+            }
+        }
+        return survey;
     }
 
-    public java.util.ArrayList<java.util.ArrayList<String>> getAllAnswers() {
-        java.util.ArrayList<java.util.ArrayList<String>> all = new java.util.ArrayList<>(answerGroups.size());
-        for (AnswerPanel ap : answerGroups) all.add(ap.getAnswers());
-        return all;
+    public List<String> getQuestions() {
+        List<String> questions = new ArrayList<>();
+        for (JTextField field : questionInputs) {
+            questions.add(field.getText().trim());
+        }
+        return questions;
+    }
+
+    public List<List<String>> getAllAnswers() {
+        List<List<String>> allAnswers = new ArrayList<>();
+        for (AnswerPanel answerPanel : answerGroups) {
+            allAnswers.add(answerPanel.getAnswers());
+        }
+        return allAnswers;
+    }
+
+    public Survey getSavedSurvey() {
+        return savedSurvey;
     }
 }

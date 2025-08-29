@@ -8,16 +8,9 @@ public class BackgroundPanel extends JPanel {
 
     private Image backgroundImage;
 
-
-
-
 public BackgroundPanel(String resourcePath){
-
     setOpaque(false);
     setBackgroundImage(resourcePath);
-
-
-
 }
 
     public void setBackgroundImage(String resourcePath) {
@@ -25,9 +18,7 @@ public BackgroundPanel(String resourcePath){
         if (url != null){
             backgroundImage = new ImageIcon(url).getImage();
         }
-
         repaint();
-
     }
 
     @Override

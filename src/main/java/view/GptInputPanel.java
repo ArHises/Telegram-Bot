@@ -8,6 +8,7 @@ import model.User;
 import javax.swing.*;
 import java.awt.*;
 
+import static util.Utils.createBotInit;
 import static view.Buttons.createImageButton;
 
 public class GptInputPanel extends BackgroundPanel {
@@ -30,27 +31,15 @@ public class GptInputPanel extends BackgroundPanel {
         add(label);
         add(textField);
 
-
-
-
         JButton submitButton = createImageButton("/submitButton.png",200,200,e->{
-
-
             createSurvey(textField.getText());
-            createBotInit(botInitializer);
+            createBotInit(botInitializer, survey);
             System.out.println(survey);
             surveyFrame.switchToCharts();
-
-                }
+        }
 
         );
         add(submitButton);
-
-    }
-
-    private void createBotInit(BotInitializer botInitializer){
-        botInitializer = new BotInitializer(survey);
-        botInitializer.startBot();
     }
 
     private void createSurvey(String topic){

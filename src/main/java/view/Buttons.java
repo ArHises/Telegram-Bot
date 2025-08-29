@@ -23,8 +23,6 @@ public final class Buttons {
 
         }
 
-
-
         // הופך את הכפתור ל"שקוף" (רק התמונה תיראה)
         button.setBorderPainted(false);
         button.setContentAreaFilled(false);

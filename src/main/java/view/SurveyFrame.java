@@ -31,8 +31,7 @@ public class SurveyFrame extends JFrame {
         analysisService = new AnalysisService();
         chartPanel = analysisService.getChartPanel();
         selectionPanel = new SelectionPanel(this);
-        dynamicSurvey = new DynamicSurvey(this);
-
+        dynamicSurvey = new DynamicSurvey(this , botInitializer);
         gptInputPanel = new GptInputPanel(this , botInitializer);
 
         cardPanel.add(chartPanel, "charts");
@@ -53,7 +52,7 @@ public class SurveyFrame extends JFrame {
 
     public void switchToCharts() {
         chartPanel.setPaused(false);
-        analysisService.addSurvey(gptInputPanel.getSurvey());
+        analysisService.addSurvey(gptInputPanel.getSurvey() == null ? dynamicSurvey.getSavedSurvey() : gptInputPanel.getSurvey());
         cardLayout.show(cardPanel, "charts");
     }
 
