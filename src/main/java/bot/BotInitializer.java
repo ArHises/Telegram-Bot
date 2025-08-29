@@ -18,37 +18,38 @@ public class BotInitializer {
 
     public void startBot(){
         try {
-//            // Step 1: Create a User (id, chatId, username)
-//            User creator = new User(1, 123456789L, "testuser");
-
-            // Step 3: Create BotService with the Survey
             BotService botService = new BotService(survey);
-            // Step 4: Create BotController with BotService
+
             BotController botController = new BotController(botService);
-            // Step 5: Create TelegramBot with BotController
+
             TelegramBot telegramBot = new TelegramBot(botController);
 
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(telegramBot);
             System.out.println("Bot is running and connected!");
 
-            boolean ok = botService.setActiveSurveyIfAllowed(survey);
-            if (!ok){
-                System.out.println("Survey not activated : we need 3 or more members and no existing survey");
-                return;
-            }
-
-            boolean launched = botService.launchSurveyNow();
-            System.out.println("survey launched " + launched);
-
-
-        } catch (TelegramApiException e) {
-            System.err.println("Telegram API Exception: " + e.getMessage());
-            e.printStackTrace();
         } catch (Exception e) {
             System.err.println("General Exception: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void startDelayThread(BotService service , BotController controller , TelegramBot bot){
+        long waitMillis = 0L;
+        if (survey.getDelay() != null){
+            waitMillis = Math.max(0L , survey.getDelay().getTime() - System.currentTimeMillis());
+        }
+//        Thread thread = new Thread(() -> { we need to warp it in try catch
+//            if (waitMillis > 0L){
+//                Thread.sleep(waitMillis);
+//            }
+//            if (!service.hasActiveSurvey()){
+//                return;
+//            }
+//             for (Long chatId : service.getChatIds()){
+//                 controller.startSurveyForUser(chatId , bot);
+//             }
+//        }).start();
     }
 
     public Survey getSurvey() {
