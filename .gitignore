@@ -6,6 +6,7 @@ src/main/java/util/MyKeys.java
 
 # Eclipse files
 .classpath
+.factorypath
 .project
 .settings/
 
@@ -33,3 +34,6 @@ Thumbs.db
 
 # Ignore CSV data files (if not needed in repo)
 data/*.csv
+
+### My API keys ###
+src/main/java/util/MyKeys.java
