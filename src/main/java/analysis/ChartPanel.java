@@ -23,6 +23,9 @@ public class ChartPanel extends JPanel {
     private final int startY = 50;
 
     public ChartPanel(Survey survey) {
+        setBackground(new Color(173,216,230));
+
+
         this.survey = survey;
         this.chartRenderer = new ChartRenderer(this);
         chartRenderer.start();
