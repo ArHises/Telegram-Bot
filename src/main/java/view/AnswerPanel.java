@@ -3,7 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 
-public class AnswerPanel extends JPanel {
+public class  AnswerPanel extends JPanel {
     private static final int MAX_ANSWERS = 4;
     private static final int START_ANSWERS = 2;
 
@@ -26,7 +26,7 @@ public class AnswerPanel extends JPanel {
 
         // Image button for "Add Answer"
         addAnswerBtn = Buttons.createImageButton(
-                "/add_answer_button.png", 90, 36,
+                "/addAnswerButton.png", 120, 130,
                 e -> {
                     if (answerFields.size() < MAX_ANSWERS) addAnswerField();
                     updateAddEnabled();

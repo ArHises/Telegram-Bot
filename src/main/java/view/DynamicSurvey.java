@@ -35,13 +35,13 @@ public class DynamicSurvey extends JPanel {
         add(scroll, BorderLayout.CENTER);
 
         addQuestionBtn = Buttons.createImageButton(
-                "/add_question_button.png", 90, 42,
+                "/addQuestionButton.png", 120, 130,
                 e -> addQuestionBlock()
         );
         addQuestionBtn.setToolTipText("Add Question");
 
         runBtn = Buttons.createImageButton(
-                "/run_button.png", 50, 42,
+                "/runButton.png", 120, 130,
                 null
         );
         runBtn.setToolTipText("Run");
