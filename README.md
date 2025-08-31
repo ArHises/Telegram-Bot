@@ -2,12 +2,14 @@
 
 <img src="src/main/resources/diagram/projectDiagram.png" alt="diagram"/>
 
-To use the AI create a new class in Util package:
+To use the AI and Telegarm bot you need to create a new class in Util package:
 
     package util;
-    
-    public class MyKeys {
-    public static final String MY_ID = "YOUR ID";
-    }
 
-> in "YOUR ID" place your id
+        public class MyKeys {
+              public static final String MY_ID = "";
+              public static final String MY_BOT_TOKEN  = "";
+              public static final String MY_USERNAME   = "";
+        }
+
+> in "MY_ID" place your id
