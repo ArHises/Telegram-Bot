@@ -6,10 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Question {
-    // לכל שאלה יש 2-4 תשובות אפשריות
 
-    private String question; // the question topic
-    private Map<String, List<User>> answers;// answers and a list of users that voted the specific answer (2 - 4 answers).
+    private String question;
+    private Map<String, List<User>> answers;
 
     public Question(String question, List<String> answers) {
         this.question = question;

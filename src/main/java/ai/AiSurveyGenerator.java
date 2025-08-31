@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AiSurveyGenerator {
-//    TODO: Responsibilities:
-//      - Transform raw API text into structured Question and option lists.
 
     public static Survey generateSurvey(String topic, int delayInMinutes){
         String data = ChatGptClient.getSurvey(topic);

@@ -42,8 +42,6 @@ public class SurveyFrame extends JFrame {
         cardLayout.show(cardPanel, "select");
 
         setSize(1200, 800);
-//        setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        setUndecorated(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -63,10 +61,5 @@ public class SurveyFrame extends JFrame {
     public void switchToManualInput() {
         chartPanel.setPaused(true);
         cardLayout.show(cardPanel, "manualInput");
-    }
-
-    public void switchToSelection() {
-        chartPanel.setPaused(true);
-        cardLayout.show(cardPanel, "selection");
     }
 }

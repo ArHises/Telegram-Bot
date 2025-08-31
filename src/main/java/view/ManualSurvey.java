@@ -23,11 +23,11 @@ public class ManualSurvey extends JPanel {
     private final List<AnswerPanel> answerGroups = new ArrayList<>();
     private int questionCount = 0;
 
-    private Survey savedSurvey; // Stores the created Survey object
-    private JTextField delayField = new JTextField("0", 5); // Field for delay in minutes
+    private Survey savedSurvey;
+    private JTextField delayField = new JTextField("0", 5);
 
     public ManualSurvey(SurveyFrame surveyFrame, BotInitializer botInitializer) {
-        super(new GridBagLayout()); // Use GridBagLayout for centralization
+        super(new GridBagLayout());
 
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -61,7 +61,7 @@ public class ManualSurvey extends JPanel {
         addQuestionBtn.addActionListener(e -> addQuestionBlock());
         submitButton.addActionListener(e -> {
             savedSurvey = getDataFromFields();
-            if(savedSurvey == null) return; // Validation failed
+            if(savedSurvey == null) return;
             createBotInit(botInitializer, savedSurvey);
             System.out.println(savedSurvey);
             surveyFrame.switchToCharts();
@@ -88,7 +88,7 @@ public class ManualSurvey extends JPanel {
         questionInputs.add(questionField);
         answerGroups.add(answers);
         questionsContainer.add(block);
-        questionsContainer.add(Box.createVerticalStrut(16)); // Separation between questions
+        questionsContainer.add(Box.createVerticalStrut(16));
         questionsContainer.revalidate();
         questionsContainer.repaint();
         questionCount++;
@@ -105,12 +105,10 @@ public class ManualSurvey extends JPanel {
             JOptionPane.showMessageDialog(this, "Invalid delay value. Please enter a number.");
             return null;
         }
-        // Validation: 1 to 3 questions
         int validQuestions = 0;
         for (int i = 0; i < questions.size(); i++) {
             String questionText = questions.get(i).trim();
             List<String> answers = (i < allAnswers.size()) ? allAnswers.get(i) : new ArrayList<>();
-            // Remove empty and duplicate answers
             List<String> filteredAnswers = answers.stream()
                     .map(String::trim)
                     .filter(a -> !a.isEmpty())
@@ -124,12 +122,11 @@ public class ManualSurvey extends JPanel {
             JOptionPane.showMessageDialog(this, "You must provide 1 to 3 questions, each with 2 to 4 unique, non-empty answers.");
             return null;
         }
-        String topic = "Manual Survey"; // TODO: Replace with actual topic
+        String topic = "Manual Survey";
         Survey survey = new Survey(topic, delay);
         for (int i = 0; i < questions.size(); i++) {
             String questionText = questions.get(i).trim();
             List<String> answers = (i < allAnswers.size()) ? allAnswers.get(i) : new ArrayList<>();
-            // Remove empty and duplicate answers
             List<String> filteredAnswers = answers.stream()
                     .map(String::trim)
                     .filter(a -> !a.isEmpty())

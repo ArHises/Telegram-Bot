@@ -22,12 +22,6 @@ public class User {
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
-    public static List<User> getAllUsers() {
-        UsersCsv repo =  new UsersCsv();
-        return repo.getAllUsers();
-
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -12,9 +12,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class ChatGptClient {
-//    TODO: Responsibilities:
-//      - Send HTTP requests to OpenAI API with topic prompt.
-//      - Handle authentication, rate‑limit headers, and JSON responses.
 
     private static final String BASE_URL = "https://app.seker.live/fm1/";
 

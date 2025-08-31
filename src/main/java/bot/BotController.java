@@ -17,9 +17,9 @@ public class BotController {
 
     private final BotService botService;
 
-    private final int MIN_MEMBERS = 2; // we need to change to 3!!! don't forget dalia
+    private final int MIN_MEMBERS = 3;
 
-    private final Set<Long> waitingToStart = new HashSet<>(); // אני רוצה את זה בשביל שיקבלו סקר אוטומטי אחרי שכולם מוכנים
+    private final Set<Long> waitingToStart = new HashSet<>();
 
     public BotController(BotService botService){
         this.botService = botService;
@@ -44,22 +44,18 @@ public class BotController {
             username = "unknown";
         }
         String text = update.getMessage().getText().trim();
-        // Always check if user has finished the survey FIRST
         if (botService.hasUserFinishedSurvey(chatId)) {
             replyFinished(bot, chatId);
             return;
         }
-        // If user is in the middle of a survey and survey is available, always reply with click buttons
         if (botService.hasActiveSurvey() && botService.getActiveSurvey().isAvailable() && botService.hasUserStartedSurvey(chatId)) {
             replyClickButtons(bot, chatId);
             return;
         }
-        // Otherwise, handle join commands and instructions as before
         if (!isJoinCommand(text)) {
             handleSurveyState(bot, chatId);
             return;
         }
-        // Register user and count members even if survey is delayed
         User user = extractUserFromUpdate(update);
         boolean isNewMember = botService.registerIfNew(user);
         if (isNewMember){
@@ -68,7 +64,6 @@ public class BotController {
         int size = botService.getChatIds().size();
         if (size < MIN_MEMBERS){
             handleMemberCount(bot, chatId, size);
-            // If survey is not available, also inform about delay
             if (!botService.getActiveSurvey().isAvailable()) {
                 String timeLeft = botService.getActiveSurvey().getTimeUntilAvailable();
                 bot.execute(new SendMessage(String.valueOf(chatId), "The survey will start in: " + timeLeft));
@@ -97,7 +92,6 @@ public class BotController {
     }
 
     private void handleSurveyState(TelegramBot bot, long chatId) throws TelegramApiException {
-        // Always check if user has finished the survey FIRST
         if (botService.hasUserFinishedSurvey(chatId)) {
             replyFinished(bot, chatId);
             return;
@@ -181,7 +175,7 @@ public class BotController {
         if (voterUserName == null){
             voterUserName = "Unknown";
         }
-        User voter = new User(1 , chatId , voterUserName); //TODO change the 1
+        User voter = new User(1 , chatId , voterUserName);
 
        if (stopIfClosed(bot , chatId)){
            return;

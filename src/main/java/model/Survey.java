@@ -1,18 +1,16 @@
 package model;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Survey {
-// -כל סקר יהיה 1-3 שאלות, כאשר לכל שאלה יש 2-4 תשובות אפשריות.
 
-    private String topic;// the topic of the survey
-    private Date createdAt;// the time when the survey was created
-    private Date delay;// delayed start in minutes
+    private String topic;
+    private Date createdAt;
+    private Date delay;
     private long timeToClose;
-    private List<Question> questions;// 1 - 3 questions to answer
+    private List<Question> questions;
 
     private boolean isFinished = false;
 
