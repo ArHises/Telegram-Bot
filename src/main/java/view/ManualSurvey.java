@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static util.Utils.createBotInit;
+import static view.Buttons.createImageButton;
 
 public class ManualSurvey extends JPanel {
-    private static final int MAX_QUESTIONS = 4;
+    private static final int MAX_QUESTIONS = 3;
 
     private final JPanel questionsContainer = new JPanel();
-    private final JButton addQuestionBtn = new JButton("Add Question");
-    private final JButton submitButton = new JButton("Submit");
+    private final JButton addQuestionBtn = createImageButton("/addQuestionButton.png", 180, 120, null);
+    private final JButton submitButton = createImageButton("/submitButton.png", 180, 120, null);
 
     private final List<JTextField> questionInputs = new ArrayList<>();
     private final List<AnswerPanel> answerGroups = new ArrayList<>();

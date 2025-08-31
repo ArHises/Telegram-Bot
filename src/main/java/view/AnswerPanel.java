@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static view.Buttons.createImageButton;
+
 /**
  * A panel for entering possible answers to a survey question.
  * Allows 2 to 4 answers, each in its own text field.
@@ -13,7 +15,7 @@ public class AnswerPanel extends JPanel {
     private static final int START_ANSWERS = 2;
 
     private final JPanel answersPanel = new JPanel();
-    private final JButton addAnswerBtn = new JButton("Add Answer");
+    private final JButton addAnswerBtn = createImageButton("/addAnswerButton.png", 120, 120, null);
     private final ArrayList<JTextField> answerFields = new ArrayList<>();
 
     /**

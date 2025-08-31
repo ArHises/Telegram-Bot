@@ -17,7 +17,7 @@ public class BotController {
 
     private final BotService botService;
 
-    private final int MIN_MEMBERS = 1; // we need to change to 3!!! don't forget dalia
+    private final int MIN_MEMBERS = 2; // we need to change to 3!!! don't forget dalia
 
     private final Set<Long> waitingToStart = new HashSet<>(); // אני רוצה את זה בשביל שיקבלו סקר אוטומטי אחרי שכולם מוכנים
 
