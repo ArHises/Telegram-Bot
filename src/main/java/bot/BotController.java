@@ -9,12 +9,17 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class BotController {
 
     private final BotService botService;
 
+    private final int MIN_MEMBERS = 3;
+
+    private final Set<Long> waitingToStart = new HashSet<>();
 
     public BotController(BotService botService){
         this.botService = botService;
@@ -23,7 +28,6 @@ public class BotController {
     public void handleUpdate(Update update , TelegramBot bot){
         try {
             if (update.hasMessage() && update.getMessage().hasText()){
-                System.out.println(botService.getActiveSurvey().toString());
                 handleStartOrIgnore(update , bot);
             } else if (update.hasCallbackQuery()) {
                 handleAnswer(update.getCallbackQuery() , bot);
@@ -40,14 +44,81 @@ public class BotController {
             username = "unknown";
         }
         String text = update.getMessage().getText().trim();
-        if (!isJoinCommand(text)) {
-            bot.execute(new SendMessage(String.valueOf(chatId), "To start the survey write : Hi , /Start or היי"));
+        if (botService.hasUserFinishedSurvey(chatId)) {
+            replyFinished(bot, chatId);
             return;
         }
-        User user = new User((int) chatId, chatId, username);
+        if (botService.hasActiveSurvey() && botService.getActiveSurvey().isAvailable() && botService.hasUserStartedSurvey(chatId)) {
+            replyClickButtons(bot, chatId);
+            return;
+        }
+        if (!isJoinCommand(text)) {
+            handleSurveyState(bot, chatId);
+            return;
+        }
+        User user = extractUserFromUpdate(update);
         boolean isNewMember = botService.registerIfNew(user);
+        if (isNewMember){
+            announceNewMember(bot , chatId , username);
+        }
+        int size = botService.getChatIds().size();
+        if (size < MIN_MEMBERS){
+            handleMemberCount(bot, chatId, size);
+            if (!botService.getActiveSurvey().isAvailable()) {
+                String timeLeft = botService.getActiveSurvey().getTimeUntilAvailable();
+                bot.execute(new SendMessage(String.valueOf(chatId), "The survey will start in: " + timeLeft));
+            }
+            return;
+        }
+        if (!botService.getActiveSurvey().isAvailable()) {
+            String timeLeft = botService.getActiveSurvey().getTimeUntilAvailable();
+            bot.execute(new SendMessage(String.valueOf(chatId), "The survey will start in: " + timeLeft));
+            return;
+        }
+        if (!waitingToStart.isEmpty()){
+            handleWaitingToStart(bot, chatId);
+            return;
+        }
+        startSurveyForUser(bot, chatId, isNewMember);
+    }
+
+    private User extractUserFromUpdate(Update update) {
+        long chatId = update.getMessage().getChatId();
+        String username = update.getMessage().getFrom().getUserName();
+        if (username == null) {
+            username = "unknown";
+        }
+        return new User((int) chatId, chatId, username);
+    }
+
+    private void handleSurveyState(TelegramBot bot, long chatId) throws TelegramApiException {
+        if (botService.hasUserFinishedSurvey(chatId)) {
+            replyFinished(bot, chatId);
+            return;
+        }
+        if (botService.hasActiveSurvey() && botService.getActiveSurvey().isAvailable() && botService.hasUserStartedSurvey(chatId)) {
+            replyClickButtons(bot , chatId);
+        } else {
+            replyStartInstructions(bot , chatId);
+        }
+    }
+
+    private void handleMemberCount(TelegramBot bot, long chatId, int size) throws TelegramApiException {
+        waitingToStart.add(chatId);
+        int remaining = MIN_MEMBERS - size;
+        String message = "We need at least " + MIN_MEMBERS + " community members to start the survey. "
+                + "Currently in community: " + size + "/" + MIN_MEMBERS + ". "
+                + "Waiting for " + remaining + " more… Ask others to send Hi, /start or היי.";
+        bot.execute(new SendMessage(String.valueOf(chatId), message));
+    }
+
+    private void handleWaitingToStart(TelegramBot bot, long chatId) throws TelegramApiException {
+        waitingToStart.add(chatId);
+        kickoffWaiting(bot);
+    }
+
+    private void startSurveyForUser(TelegramBot bot, long chatId, boolean isNewMember) throws TelegramApiException {
         boolean surveyStarted = botService.startSurveyForChat(chatId);
-        System.out.println(botService.getActiveSurvey().toString()); // testing
         System.out.println("is a new Member: " + isNewMember);
         System.out.println("survey started: " + surveyStarted);
         if (surveyStarted) {
@@ -55,16 +126,38 @@ public class BotController {
             if (currentIndex != null) {
                 sendQuestion(bot, chatId, currentIndex);
             }else {
-                System.out.println("survey broken");
-                bot.execute(new SendMessage(String.valueOf(chatId) , "The survey is not available"));
+                replyFinished(bot , chatId);
             }
-            if (isNewMember) {
-                String joinAnnouncement = botService.newMemberAnnouncement(username);
-                for (Long memberChatId : botService.getChatIds()) {
-                    if (!memberChatId.equals(chatId)) {
-                        bot.execute(new SendMessage(String.valueOf(memberChatId), joinAnnouncement));
-                    }
+        }else {
+            replyFinished(bot , chatId);
+        }
+    }
+
+    private void announceNewMember(TelegramBot bot, long chatId, String username) throws TelegramApiException {
+        String joinAnnouncement = botService.newMemberAnnouncement(username);
+        for (Long memberChatId : botService.getChatIds()) {
+            if (!memberChatId.equals(chatId)) {
+                bot.execute(new SendMessage(String.valueOf(memberChatId), joinAnnouncement));
+            }
+        }
+    }
+
+    private void kickoffWaiting(TelegramBot bot) throws TelegramApiException {
+        List<Long> waitingParticipants = new ArrayList<>(waitingToStart);
+        waitingToStart.clear();
+        for (Long participantChatId : waitingParticipants) {
+            boolean started = botService.startSurveyForChat(participantChatId);
+            if (started) {
+                bot.execute(new SendMessage(String.valueOf(participantChatId),
+                        "All required members joined. Starting the survey now!"));
+                Integer currentQuestionIndex = botService.getCurrentIndex(participantChatId);
+                if (currentQuestionIndex != null) {
+                    sendQuestion(bot, participantChatId, currentQuestionIndex);
+                } else {
+                    replyFinished(bot, participantChatId);
                 }
+            } else {
+                replyFinished(bot, participantChatId);
             }
         }
     }
@@ -82,7 +175,12 @@ public class BotController {
         if (voterUserName == null){
             voterUserName = "Unknown";
         }
-        User voter = new User(1 , chatId , voterUserName); //TODO
+        User voter = new User(1 , chatId , voterUserName);
+
+       if (stopIfClosed(bot , chatId)){
+           return;
+       }
+
         boolean hasMoreQuestions = botService.submitAnswerAndNext(voter , chatId , chosenAnswer);
         if (hasMoreQuestions){
             Integer currentIndex = botService.getCurrentIndex(chatId);
@@ -90,7 +188,7 @@ public class BotController {
                 sendQuestion(bot , chatId , currentIndex);
             }
         }else {
-            bot.execute(new SendMessage(String.valueOf(chatId) , "The survey has finished"));
+            replyFinished(bot , chatId);
             System.out.println("Survey completed for chat " + chatId + ":\n" + botService.getActiveSurvey());
         }
     }
@@ -100,24 +198,44 @@ public class BotController {
         List<String> answerOptions = botService.getOptionsForIndex(questionIndex);
 
         if (getQuestionText == null || answerOptions == null){
-            bot.execute(new SendMessage(String.valueOf(chatId) , "invalid question or options"));
+            replyFinished(bot , chatId);
             return;
         }
 
         SendMessage message = new SendMessage(String.valueOf(chatId) , getQuestionText);
         List<List<InlineKeyboardButton>> keyboardMatrix = new ArrayList<>();
 
-            for (String option : answerOptions){
-                InlineKeyboardButton button = new InlineKeyboardButton();
-                button.setText(option);
-                button.setCallbackData(option);
-                keyboardMatrix.add(List.of(button));
-            }
+        for (String option : answerOptions){
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(option);
+            button.setCallbackData(option);
+            keyboardMatrix.add(List.of(button));
+        }
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         keyboardMarkup.setKeyboard(keyboardMatrix);
         message.setReplyMarkup(keyboardMarkup);
 
         bot.execute(message);
+    }
+
+    private boolean stopIfClosed(TelegramBot bot, long chatId) throws TelegramApiException {
+        if (botService.shouldCloseSurvey()) {
+            replyFinished(bot, chatId);
+            return true;
+        }
+        return false;
+    }
+
+    private void replyFinished(TelegramBot bot, long chatId) throws TelegramApiException {
+        bot.execute(new SendMessage(String.valueOf(chatId), "The survey has finished"));
+    }
+
+    private void replyClickButtons(TelegramBot bot, long chatId) throws TelegramApiException {
+        bot.execute(new SendMessage(String.valueOf(chatId), "Please click one of the buttons"));
+    }
+
+    private void replyStartInstructions(TelegramBot bot, long chatId) throws TelegramApiException {
+        bot.execute(new SendMessage(String.valueOf(chatId), "To start the survey please write : Hi , /Start or היי"));
     }
 }

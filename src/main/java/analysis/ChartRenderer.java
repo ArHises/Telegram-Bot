@@ -1,9 +1,6 @@
 package analysis;
 
 public class ChartRenderer extends Thread {
-//    TODO: Responsibilities:
-//      Generate bar‑chart images (e.g., using JFreeChart).
-//      Expose chart files/streams back to SwingController for display.
 
     private final ChartPanel chartPanel;
 

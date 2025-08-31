@@ -10,10 +10,10 @@ public class BotService {
 
     private final UsersCsv usersCsv = new UsersCsv();
     private final Set<Long> chatIds = new HashSet<>();
+    private final Set<Long> finishedChatIds = new HashSet<>();
     private final Map<Long , Integer> progressByChat = new HashMap<>();
     private Survey activeSurvey;
-
-
+    private long openUntilMillis = 0L;
 
     public BotService(Survey initialSurvey){
         this.activeSurvey = initialSurvey;
@@ -45,14 +45,26 @@ public class BotService {
         return Collections.unmodifiableSet(chatIds);
     }
 
-    public String newMemberAnnouncement(String userName){ //this method will be used in if statement with registerIfNew = existed method
+    public String newMemberAnnouncement(String userName){
         int size = chatIds.size();
         return "New member : " + userName + "  Community size : " + size;
     }
 
-    public void setActiveSurvey(Survey survey) {
-        this.activeSurvey = survey;
-        progressByChat.clear();
+    public boolean shouldCloseSurvey() {
+        boolean timeUp = (openUntilMillis > 0) && (System.currentTimeMillis() >= openUntilMillis);
+        boolean allFinished = (openUntilMillis > 0) && !chatIds.isEmpty()
+                && finishedChatIds.containsAll(chatIds);
+        return timeUp || allFinished;
+    }
+
+    public void endSurvey(){
+        if (activeSurvey != null) {
+            activeSurvey.setFinished(true);
+        }
+        this.openUntilMillis = 0L;
+        this.progressByChat.clear();
+        this.activeSurvey = null;
+        System.out.println("Survey ended.");
     }
 
     public Survey getActiveSurvey() {
@@ -67,6 +79,15 @@ public class BotService {
 
     public boolean startSurveyForChat(long chatId){
         if (!hasActiveSurvey()){
+            return false;
+        }
+        if (openUntilMillis == 0L){
+            openUntilMillis = activeSurvey.getTimeToClose();
+        }
+        if (shouldCloseSurvey()){
+            return false;
+        }
+        if (finishedChatIds.contains(chatId)){
             return false;
         }
         progressByChat.put(chatId , 0);
@@ -97,12 +118,15 @@ public class BotService {
     }
 
     public boolean submitAnswerAndNext(User voter , Long chatId , String chosenAnswer){
-        if (!hasActiveSurvey()){
+        if (shouldCloseSurvey()){
+            return false;
+        }
+        if (finishedChatIds.contains(chatId)){
             return false;
         }
         Integer currentQuestionIndex = progressByChat.get(chatId);
         if (currentQuestionIndex == null){
-            return startSurveyForChat(chatId);
+            return false;
         }
         if (!isValidQuestionIndex(currentQuestionIndex)){
             return false;
@@ -115,9 +139,19 @@ public class BotService {
             return true;
         }else {
             progressByChat.remove(chatId);
+            finishedChatIds.add(chatId);
+            if (shouldCloseSurvey()){
+                endSurvey();
+            }
             return false;
         }
     }
 
+    public boolean hasUserStartedSurvey(long chatId) {
+        return progressByChat.containsKey(chatId);
+    }
 
+    public boolean hasUserFinishedSurvey(long chatId) {
+        return finishedChatIds.contains(chatId);
+    }
 }

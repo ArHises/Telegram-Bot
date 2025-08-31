@@ -6,10 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Question {
-    // לכל שאלה יש 2-4 תשובות אפשריות
 
-    private String question; // the question topic
-    private Map<String, List<User>> answers;// answers and a list of users that voted the specific answer (2 - 4 answers).
+    private String question;
+    private Map<String, List<User>> answers;
 
     public Question(String question, List<String> answers) {
         this.question = question;
@@ -21,14 +20,20 @@ public class Question {
     }
 
     /**
-     * @param question the question topic
+     * @param answer the question topic
      * @param user user to add to the topic
      * Add a new vote to question
      */
-    public void addVote(String question,User user){
-        List<User> users = this.answers.get(question);
-        users.add(user);
-        this.answers.put(question,users);
+    public void addVote(String answer,User user){
+       for (List<User> voters : answers.values()){
+           if (voters.contains(user)){
+               return;
+           }
+       }
+       List<User> users = this.answers.get(answer);
+       if (users != null){
+           users.add(user);
+       }
     }
 
     public String getQuestion() {

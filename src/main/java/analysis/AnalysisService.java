@@ -4,6 +4,7 @@ import ai.AiSurveyGenerator;
 import model.Question;
 import model.Survey;
 import model.User;
+import view.SurveyFrame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,6 @@ public class AnalysisService {
         this.surveys = new ArrayList<>();
         this.chartPanel = new ChartPanel(null);
         this.isActive = false;
-
-//        Survey survey = AiSurveyGenerator.generateSurvey("Capitals",new User(1,"Garik"),5);
-//        System.out.println(survey);
-//        voteSimulation(survey);
-//        addSurvey(survey);
-
     }
 
     @Deprecated
@@ -59,18 +54,6 @@ public class AnalysisService {
         this.surveys.add(survey);
         this.chartPanel.setSurvey(survey);
         this.isActive = true;
-    }
-
-    public Survey getCurrentSurvey() {
-        return this.surveys.get(this.surveys.size() - 1);
-    }
-
-    public List<Survey> getSurveys() {
-        return surveys;
-    }
-
-    public boolean isActive() {
-        return isActive;
     }
 
     public ChartPanel getChartPanel() {

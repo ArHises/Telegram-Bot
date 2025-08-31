@@ -1,6 +1,5 @@
 package view;
 
-import ai.ChatGptClient;
 import analysis.AnalysisService;
 import analysis.ChartPanel;
 import bot.BotInitializer;
@@ -16,7 +15,7 @@ public class SurveyFrame extends JFrame {
     private BotInitializer botInitializer;
 
     private GptInputPanel gptInputPanel;
-    private DynamicSurvey dynamicSurvey;
+    private ManualSurvey dynamicSurvey;
     private SelectionPanel selectionPanel;
 
     private AnalysisService analysisService;
@@ -31,8 +30,7 @@ public class SurveyFrame extends JFrame {
         analysisService = new AnalysisService();
         chartPanel = analysisService.getChartPanel();
         selectionPanel = new SelectionPanel(this);
-        dynamicSurvey = new DynamicSurvey(this);
-
+        dynamicSurvey = new ManualSurvey(this , botInitializer);
         gptInputPanel = new GptInputPanel(this , botInitializer);
 
         cardPanel.add(chartPanel, "charts");
@@ -44,8 +42,6 @@ public class SurveyFrame extends JFrame {
         cardLayout.show(cardPanel, "select");
 
         setSize(1200, 800);
-//        setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        setUndecorated(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -53,7 +49,7 @@ public class SurveyFrame extends JFrame {
 
     public void switchToCharts() {
         chartPanel.setPaused(false);
-        analysisService.addSurvey(gptInputPanel.getSurvey());
+        analysisService.addSurvey(gptInputPanel.getSurvey() == null ? dynamicSurvey.getSavedSurvey() : gptInputPanel.getSurvey());
         cardLayout.show(cardPanel, "charts");
     }
 
@@ -65,10 +61,5 @@ public class SurveyFrame extends JFrame {
     public void switchToManualInput() {
         chartPanel.setPaused(true);
         cardLayout.show(cardPanel, "manualInput");
-    }
-
-    public void switchToSelection() {
-        chartPanel.setPaused(true);
-        cardLayout.show(cardPanel, "selection");
     }
 }
