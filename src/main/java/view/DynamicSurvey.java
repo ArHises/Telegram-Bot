@@ -7,12 +7,13 @@ import model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import static util.Utils.createBotInit;
 
-public class ManualSurvey extends JPanel {
+public class DynamicSurvey extends JPanel {
     private static final int MAX_QUESTIONS = 4;
 
     private final JPanel questionsContainer = new JPanel();
@@ -26,7 +27,7 @@ public class ManualSurvey extends JPanel {
     private Survey savedSurvey; // Stores the created Survey object
     private JTextField delayField = new JTextField("0", 5); // Field for delay in minutes
 
-    public ManualSurvey(SurveyFrame surveyFrame, BotInitializer botInitializer) {
+    public DynamicSurvey(SurveyFrame surveyFrame, BotInitializer botInitializer) {
         super(new GridBagLayout()); // Use GridBagLayout for centralization
 
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
