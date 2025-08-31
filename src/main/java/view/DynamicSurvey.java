@@ -125,9 +125,8 @@ public class DynamicSurvey extends JPanel {
             JOptionPane.showMessageDialog(this, "You must provide 1 to 3 questions, each with 2 to 4 unique, non-empty answers.");
             return null;
         }
-        User creator = null; // TODO: Replace with actual creator
         String topic = "Manual Survey"; // TODO: Replace with actual topic
-        Survey survey = new Survey(creator, topic, delay);
+        Survey survey = new Survey(topic, delay);
         for (int i = 0; i < questions.size(); i++) {
             String questionText = questions.get(i).trim();
             List<String> answers = (i < allAnswers.size()) ? allAnswers.get(i) : new ArrayList<>();

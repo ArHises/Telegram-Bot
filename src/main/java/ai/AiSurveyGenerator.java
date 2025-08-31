@@ -13,7 +13,7 @@ public class AiSurveyGenerator {
 //    TODO: Responsibilities:
 //      - Transform raw API text into structured Question and option lists.
 
-    public static Survey generateSurvey(String topic, User creator, int delayInMinutes){
+    public static Survey generateSurvey(String topic, int delayInMinutes){
         String data = ChatGptClient.getSurvey(topic);
         if (data == null) {
             System.out.println("null data");
@@ -30,7 +30,7 @@ public class AiSurveyGenerator {
         JSONObject surveyObj = obj.getJSONObject("survey");
 
         String title = surveyObj.getString("title");
-        Survey survey = new Survey(creator, title, delayInMinutes);
+        Survey survey = new Survey(title, delayInMinutes);
 
         JSONArray questionsArray = surveyObj.getJSONArray("questions");
 

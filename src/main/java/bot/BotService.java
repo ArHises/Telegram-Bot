@@ -4,6 +4,7 @@ import model.Survey;
 import model.User;
 import model.UsersCsv;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class BotService {
@@ -16,7 +17,6 @@ public class BotService {
     private long openUntilMillis = 0L;
 
     public static final long SURVEY_TIMEOUT_MILLIS = 5 * 60 * 1000L;
-
 
     public BotService(Survey initialSurvey){
         this.activeSurvey = initialSurvey;
@@ -53,27 +53,6 @@ public class BotService {
         return "New member : " + userName + "  Community size : " + size;
     }
 
-    public boolean setActiveSurveyIfAllowed(Survey survey) {
-        if (chatIds.size() < 2){ // change to 3 !!
-            return false;
-        }
-        if (hasActiveSurvey()){
-            return false;
-        }
-        this.activeSurvey = survey;
-        this.progressByChat.clear();
-        this.finishedChatIds.clear();
-        this.openUntilMillis = 0L;
-        return true;
-    }
-
-    public boolean launchSurveyNow(){
-        if (!hasActiveSurvey()) return false;
-        this.openUntilMillis = System.currentTimeMillis() + SURVEY_TIMEOUT_MILLIS;
-
-        return true;
-    }
-
     public boolean shouldCloseSurvey() {
         boolean timeUp = (openUntilMillis > 0) && (System.currentTimeMillis() >= openUntilMillis);
         boolean allFinished = (openUntilMillis > 0) && !chatIds.isEmpty()
@@ -104,8 +83,13 @@ public class BotService {
             return false;
         }
         if (openUntilMillis == 0L){
-            openUntilMillis = System.currentTimeMillis() + SURVEY_TIMEOUT_MILLIS;
+//            openUntilMillis = System.currentTimeMillis() + SURVEY_TIMEOUT_MILLIS;
+            openUntilMillis = activeSurvey.getTimeToClose();
 
+//            activeSurvey.setTimeToClose(openUntilMillis);
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            String formattedTime = sdf.format(new Date(openUntilMillis));
+            System.out.println("survey will be finished at: " + formattedTime);
         }
         if (shouldCloseSurvey()){
             return false;

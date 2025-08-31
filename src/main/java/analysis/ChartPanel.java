@@ -11,22 +11,17 @@ import org.jfree.data.general.DefaultPieDataset;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class ChartPanel extends JPanel {
 
     private Survey survey;
     private ChartRenderer chartRenderer; // מעבד תרשימים
 
-    private final int startX = 50;
-    private final int startY = 50;
-
     public ChartPanel(Survey survey) {
         setBackground(new Color(173,216,230));
-
 
         this.survey = survey;
         this.chartRenderer = new ChartRenderer(this);
@@ -57,7 +52,9 @@ public class ChartPanel extends JPanel {
         super.paintComponent(g);
         // Draw delay at the top center
         if (survey != null) {
-            String delayText = survey.isAvailable() ? "Available now" : "Survey available in: " + survey.getTimeUntilAvailable();
+            String delayText = survey.isAvailable()
+                    ? "Survey available until: " + survey.getTimeUntilClose()
+                    : "Survey available in: " + survey.getTimeUntilAvailable();
             g.setFont(g.getFont().deriveFont(Font.BOLD, 22f));
             FontMetrics fm = g.getFontMetrics();
             int textWidth = fm.stringWidth(delayText);
@@ -71,14 +68,11 @@ public class ChartPanel extends JPanel {
 
     public void drawPies(Graphics g){
         Graphics2D g2 = (Graphics2D) g;
-        List<JFreeChart> pies = new ArrayList<>();
         int numberOfQuestions = this.survey.getQuestions().size();
-        Random rand = new Random();
         for (int i = 0; i < numberOfQuestions; i++){
             DefaultPieDataset dataset = new DefaultPieDataset();
             Question currentQuestion = this.survey.getQuestions().get(i);
             Map<String, List<User>> answers = currentQuestion.getAnswers();
-            int totalVotes = answers.values().stream().mapToInt(List::size).sum();
             for (Map.Entry<String, List<User>> entry : answers.entrySet()){
                 dataset.setValue(entry.getKey(), entry.getValue().size());
             }
@@ -86,10 +80,9 @@ public class ChartPanel extends JPanel {
             int pieHeight = getHeight() / numberOfQuestions;
             JFreeChart pie = ChartFactory.createPieChart(currentQuestion.getQuestion(),
                     dataset, false, false, false);
-            // Add percentage labels to pie (cast to PiePlot)
             PiePlot plot = (PiePlot) pie.getPlot();
             plot.setLabelGenerator(new StandardPieSectionLabelGenerator("{0}: {2}"));
-            pie.draw(g2, new Rectangle(pieWidth * i, 60, pieWidth, pieHeight)); // 60px offset for delay text
+            pie.draw(g2, new Rectangle(pieWidth * i, 60, pieWidth, pieHeight));
         }
     }
 

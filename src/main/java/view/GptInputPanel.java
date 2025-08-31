@@ -62,8 +62,7 @@ public class GptInputPanel extends BackgroundPanel {
     }
 
     private void createSurvey(String topic, int delayMinutes){
-        survey = AiSurveyGenerator.generateSurvey(topic ,
-                new User(5,5,"test") , delayMinutes);
+        survey = AiSurveyGenerator.generateSurvey(topic , delayMinutes);
     }
 
     public Survey getSurvey() {

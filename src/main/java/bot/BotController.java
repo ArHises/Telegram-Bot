@@ -17,7 +17,7 @@ public class BotController {
 
     private final BotService botService;
 
-    private final int MIN_MEMBERS = 2; // we need to change to 3!!! don't forget dalia
+    private final int MIN_MEMBERS = 1; // we need to change to 3!!! don't forget dalia
 
     private final Set<Long> waitingToStart = new HashSet<>(); // אני רוצה את זה בשביל שיקבלו סקר אוטומטי אחרי שכולם מוכנים
 
@@ -73,7 +73,7 @@ public class BotController {
             handleWaitingToStart(bot, chatId);
             return;
         }
-        startSurveyForUser(bot, chatId, isNewMember, username);
+        startSurveyForUser(bot, chatId, isNewMember);
     }
 
     private User extractUserFromUpdate(Update update) {
@@ -87,9 +87,9 @@ public class BotController {
 
     private void handleSurveyState(TelegramBot bot, long chatId) throws TelegramApiException {
         if (!botService.shouldCloseSurvey()) {
-            replyClickButtons(bot , chatId);
-        } else {
             replyStartInstructions(bot , chatId);
+        } else {
+            replyClickButtons(bot , chatId);
         }
     }
 
@@ -107,7 +107,7 @@ public class BotController {
         kickoffWaiting(bot);
     }
 
-    private void startSurveyForUser(TelegramBot bot, long chatId, boolean isNewMember, String username) throws TelegramApiException {
+    private void startSurveyForUser(TelegramBot bot, long chatId, boolean isNewMember) throws TelegramApiException {
         boolean surveyStarted = botService.startSurveyForChat(chatId);
         System.out.println("is a new Member: " + isNewMember);
         System.out.println("survey started: " + surveyStarted);
