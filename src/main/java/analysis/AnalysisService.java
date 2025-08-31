@@ -4,6 +4,7 @@ import ai.AiSurveyGenerator;
 import model.Question;
 import model.Survey;
 import model.User;
+import view.SurveyFrame;
 
 import java.util.ArrayList;
 import java.util.List;

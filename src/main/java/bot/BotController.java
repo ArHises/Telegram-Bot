@@ -44,6 +44,17 @@ public class BotController {
             username = "unknown";
         }
         String text = update.getMessage().getText().trim();
+        // Always check if user has finished the survey FIRST
+        if (botService.hasUserFinishedSurvey(chatId)) {
+            replyFinished(bot, chatId);
+            return;
+        }
+        // If user is in the middle of a survey and survey is available, always reply with click buttons
+        if (botService.hasActiveSurvey() && botService.getActiveSurvey().isAvailable() && botService.hasUserStartedSurvey(chatId)) {
+            replyClickButtons(bot, chatId);
+            return;
+        }
+        // Otherwise, handle join commands and instructions as before
         if (!isJoinCommand(text)) {
             handleSurveyState(bot, chatId);
             return;
@@ -86,10 +97,15 @@ public class BotController {
     }
 
     private void handleSurveyState(TelegramBot bot, long chatId) throws TelegramApiException {
-        if (!botService.shouldCloseSurvey()) {
-            replyStartInstructions(bot , chatId);
-        } else {
+        // Always check if user has finished the survey FIRST
+        if (botService.hasUserFinishedSurvey(chatId)) {
+            replyFinished(bot, chatId);
+            return;
+        }
+        if (botService.hasActiveSurvey() && botService.getActiveSurvey().isAvailable() && botService.hasUserStartedSurvey(chatId)) {
             replyClickButtons(bot , chatId);
+        } else {
+            replyStartInstructions(bot , chatId);
         }
     }
 
@@ -195,12 +211,12 @@ public class BotController {
         SendMessage message = new SendMessage(String.valueOf(chatId) , getQuestionText);
         List<List<InlineKeyboardButton>> keyboardMatrix = new ArrayList<>();
 
-            for (String option : answerOptions){
-                InlineKeyboardButton button = new InlineKeyboardButton();
-                button.setText(option);
-                button.setCallbackData(option);
-                keyboardMatrix.add(List.of(button));
-            }
+        for (String option : answerOptions){
+            InlineKeyboardButton button = new InlineKeyboardButton();
+            button.setText(option);
+            button.setCallbackData(option);
+            keyboardMatrix.add(List.of(button));
+        }
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         keyboardMarkup.setKeyboard(keyboardMatrix);

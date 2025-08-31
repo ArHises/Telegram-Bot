@@ -14,13 +14,15 @@ public class Survey {
     private long timeToClose;
     private List<Question> questions;// 1 - 3 questions to answer
 
+    private boolean isFinished = false;
+
     public Survey(String topic, int delay) {
         this.createdAt = new Date(System.currentTimeMillis());
         this.delay = new Date(System.currentTimeMillis()
                 + (long) delay * 1000 * 60);
         this.topic = topic;
         this.questions = new ArrayList<>();
-        this.timeToClose = this.delay.getTime() + 5 * 60 * 1000L;
+        this.timeToClose = this.delay.getTime() + 5 * 60 * 1000; // 5 minutes after available
     }
 
     public boolean isAvailable() {
@@ -32,10 +34,12 @@ public class Survey {
     }
 
     public String getTimeUntilClose(){
+        if (this.timeToClose == 0) return "00:00:00";
         return calcTimeLeft(this.timeToClose);
     }
 
     private String calcTimeLeft(long time){
+        if (time == 0) return "00:00:00";
         long millis = time - System.currentTimeMillis();
         if (millis <= 0) return "00:00:00";
         long totalSeconds = millis / 1000;
@@ -55,6 +59,14 @@ public class Survey {
 
     public List<Question> getQuestions() {
         return questions;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.isFinished = finished;
     }
 
     @Override

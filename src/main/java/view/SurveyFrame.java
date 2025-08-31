@@ -1,6 +1,5 @@
 package view;
 
-import ai.ChatGptClient;
 import analysis.AnalysisService;
 import analysis.ChartPanel;
 import bot.BotInitializer;
@@ -16,7 +15,7 @@ public class SurveyFrame extends JFrame {
     private BotInitializer botInitializer;
 
     private GptInputPanel gptInputPanel;
-    private DynamicSurvey dynamicSurvey;
+    private ManualSurvey dynamicSurvey;
     private SelectionPanel selectionPanel;
 
     private AnalysisService analysisService;
@@ -31,7 +30,7 @@ public class SurveyFrame extends JFrame {
         analysisService = new AnalysisService();
         chartPanel = analysisService.getChartPanel();
         selectionPanel = new SelectionPanel(this);
-        dynamicSurvey = new DynamicSurvey(this , botInitializer);
+        dynamicSurvey = new ManualSurvey(this , botInitializer);
         gptInputPanel = new GptInputPanel(this , botInitializer);
 
         cardPanel.add(chartPanel, "charts");

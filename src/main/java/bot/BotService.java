@@ -4,7 +4,6 @@ import model.Survey;
 import model.User;
 import model.UsersCsv;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class BotService {
@@ -15,8 +14,6 @@ public class BotService {
     private final Map<Long , Integer> progressByChat = new HashMap<>();
     private Survey activeSurvey;
     private long openUntilMillis = 0L;
-
-    public static final long SURVEY_TIMEOUT_MILLIS = 5 * 60 * 1000L;
 
     public BotService(Survey initialSurvey){
         this.activeSurvey = initialSurvey;
@@ -56,14 +53,16 @@ public class BotService {
     public boolean shouldCloseSurvey() {
         boolean timeUp = (openUntilMillis > 0) && (System.currentTimeMillis() >= openUntilMillis);
         boolean allFinished = (openUntilMillis > 0) && !chatIds.isEmpty()
-                && finishedChatIds.containsAll(chatIds) ;
+                && finishedChatIds.containsAll(chatIds);
         return timeUp || allFinished;
     }
 
     public void endSurvey(){
+        if (activeSurvey != null) {
+            activeSurvey.setFinished(true);
+        }
         this.openUntilMillis = 0L;
         this.progressByChat.clear();
-        this.finishedChatIds.clear();
         this.activeSurvey = null;
         System.out.println("Survey ended.");
     }
@@ -83,13 +82,7 @@ public class BotService {
             return false;
         }
         if (openUntilMillis == 0L){
-//            openUntilMillis = System.currentTimeMillis() + SURVEY_TIMEOUT_MILLIS;
             openUntilMillis = activeSurvey.getTimeToClose();
-
-//            activeSurvey.setTimeToClose(openUntilMillis);
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-            String formattedTime = sdf.format(new Date(openUntilMillis));
-            System.out.println("survey will be finished at: " + formattedTime);
         }
         if (shouldCloseSurvey()){
             return false;
@@ -152,5 +145,13 @@ public class BotService {
             }
             return false;
         }
+    }
+
+    public boolean hasUserStartedSurvey(long chatId) {
+        return progressByChat.containsKey(chatId);
+    }
+
+    public boolean hasUserFinishedSurvey(long chatId) {
+        return finishedChatIds.contains(chatId);
     }
 }

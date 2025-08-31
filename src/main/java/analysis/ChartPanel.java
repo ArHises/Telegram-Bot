@@ -8,6 +8,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
+import view.SurveyFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,39 +23,23 @@ public class ChartPanel extends JPanel {
 
     public ChartPanel(Survey survey) {
         setBackground(new Color(173,216,230));
-
         this.survey = survey;
         this.chartRenderer = new ChartRenderer(this);
         chartRenderer.start();
     }
 
-    @Deprecated
-    public void drawColumns(Graphics g, int x, int y){
-        int gap = 0;
-        Random rand = new Random();
-        for (int i = 0; i < this.survey.getQuestions().size(); i++){
-            Question currentQuestion = this.survey.getQuestions().get(i);
-            Map<String, List<User>> answers = currentQuestion.getAnswers();
-            for (Map.Entry<String, List<User>> entry : answers.entrySet()){
-                Color randomColor = new Color(rand.nextInt(80,200),
-                        rand.nextInt(80,200),
-                        rand.nextInt(80,200));
-
-                g.setColor(randomColor);
-                g.fillRect(x, y + gap, entry.getValue().size() * 50, 20);
-                gap += (20 + 20);
-            }
-        }
-    }
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Draw delay at the top center
         if (survey != null) {
-            String delayText = survey.isAvailable()
-                    ? "Survey available until: " + survey.getTimeUntilClose()
-                    : "Survey available in: " + survey.getTimeUntilAvailable();
+            String delayText = "";
+            if (survey.isFinished()){
+                delayText = "Survey finished!";
+            } else if (survey.isAvailable()){
+                delayText = "Survey available until: " + survey.getTimeUntilClose();
+            } else {
+                delayText = "Survey available in: " + survey.getTimeUntilAvailable();
+            }
             g.setFont(g.getFont().deriveFont(Font.BOLD, 22f));
             FontMetrics fm = g.getFontMetrics();
             int textWidth = fm.stringWidth(delayText);
