@@ -12,7 +12,7 @@ import java.util.List;
 import static util.Utils.createBotInit;
 import static view.Buttons.createImageButton;
 
-public class ManualSurvey extends JPanel {
+public class ManualSurvey extends BackgroundPanel {
     private static final int MAX_QUESTIONS = 3;
 
     private final JPanel questionsContainer = new JPanel();
@@ -27,7 +27,8 @@ public class ManualSurvey extends JPanel {
     private JTextField delayField = new JTextField("0", 5);
 
     public ManualSurvey(SurveyFrame surveyFrame, BotInitializer botInitializer) {
-        super(new GridBagLayout());
+        super("/TelegramPhoto.jpg");
+        setLayout(new GridBagLayout());
 
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -38,22 +39,30 @@ public class ManualSurvey extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topPanel.setOpaque(false);
         topPanel.add(new JLabel("Delay (minutes): "));
         topPanel.add(delayField);
         add(topPanel, gbc);
 
         gbc.gridy++;
         questionsContainer.setLayout(new BoxLayout(questionsContainer, BoxLayout.Y_AXIS));
+        questionsContainer.setOpaque(false);
+
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setOpaque(false);
         JScrollPane scrollPane = new JScrollPane(questionsContainer);
         scrollPane.setPreferredSize(new Dimension(500, 350));
         scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
         centerPanel.add(scrollPane);
         add(centerPanel, gbc);
 
         gbc.gridy++;
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        controls.setOpaque(false);
+
         controls.add(addQuestionBtn);
         controls.add(submitButton);
         add(controls, gbc);
